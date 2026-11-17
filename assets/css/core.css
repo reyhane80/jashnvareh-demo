@@ -1,5 +1,5 @@
 /*!
- * جشنواره — مجموعه‌ی ۱۵ لندینگ فروش ویژه | نسخه‌ی 1.1.0
+ * جشنواره — مجموعه‌ی ۱۵ لندینگ فروش ویژه | نسخه‌ی 1.2.0
  * استایل پایه‌ی مشترک همه‌ی لندینگ‌ها.
  * رنگ‌ها و فونت هر لندینگ در فایل assets/css/landing-XX.css تعریف شده‌اند.
  * تغییرات شخصی را در assets/css/custom.css بنویسید.
@@ -11,7 +11,7 @@
   --primary:#222; --primary-ink:#fff; --accent:#c00; --line:rgba(0,0,0,.12);
   --radius:14px; --radius-sm:10px; --font-body:'Vazirmatn',Tahoma,sans-serif; --font-display:var(--font-body);
   --container:1240px; --gutter:clamp(16px,4vw,32px); --section:clamp(56px,8vw,104px);
-  --shadow:0 18px 40px -22px rgba(0,0,0,.35); --ease:cubic-bezier(.2,.7,.2,1);
+  --shadow:0 14px 32px -20px rgba(0,0,0,.22); --ease:cubic-bezier(.2,.7,.2,1);
   --header-h:72px;
 }
 
@@ -302,7 +302,7 @@ svg.icon{width:1.25em;height:1.25em;flex:none}
 .featured{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(28px,5vw,72px);align-items:center}
 .featured-media{position:relative;border-radius:var(--radius);overflow:hidden;background:#fff;aspect-ratio:1}
 .featured-media img{width:100%;height:100%;object-fit:cover}
-.featured-media .badge{font-size:.95rem;top:18px;inset-inline-start:18px}
+.featured-media .badge{font-size:.78rem;top:16px;inset-inline-start:16px}
 .featured-body h2{font-family:var(--font-display);font-size:clamp(1.6rem,3.2vw,2.4rem);margin:10px 0 16px}
 .featured-body>p{color:var(--muted);margin-bottom:20px}
 .check-list{display:grid;gap:10px;margin-bottom:24px}
@@ -782,17 +782,16 @@ body.no-scroll{overflow:hidden}
 @media (max-width:420px){.header .container{gap:8px}.logo{font-size:1.05rem;min-width:0}.logo-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.logo-mark{width:36px;height:36px}.header-actions{gap:0}.icon-btn{width:40px;height:40px}}
 
 /* =====================================================================
-   نسخه‌ی 1.1.0
+   نسخه‌ی 1.2.0
    ===================================================================== */
 /* نوار اطلاعیه‌ی متحرک */
 .topbar-ticker{flex:1;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
 .ticker-track{display:flex;width:max-content;animation:ticker 55s linear infinite}
-.topbar:hover .ticker-track,.topbar:focus-within .ticker-track{animation-play-state:paused}
 .ticker-group{display:flex;flex:none}
 .ticker-item{display:inline-flex;align-items:center;gap:.5em;padding-inline:28px;white-space:nowrap;font-size:.85rem;font-weight:600}
 .ticker-item .icon{width:1.05em;height:1.05em;opacity:.85}
 .ticker-item::after{content:"";width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.45;margin-inline-start:28px}
-@keyframes ticker{to{transform:translateX(50%)}}
+@keyframes ticker{to{transform:translateX(33.3333%)}}
 .topbar-close{position:static;translate:none;flex:none;margin-inline:6px}
 @media (prefers-reduced-motion:reduce){.ticker-track{animation:none}.ticker-group[aria-hidden]{display:none}}
 
@@ -860,3 +859,85 @@ body.no-scroll{overflow:hidden}
 .footer-links a:hover{opacity:1;color:#fff}
 .footer-bottom span:last-child{text-align:end}
 @media (max-width:560px){.footer-bottom{flex-direction:column;align-items:center;text-align:center}.footer-bottom span:last-child{text-align:center}.trust-badges{justify-content:flex-start}}
+
+/* =====================================================================
+   نسخه‌ی 1.2.0 — اصلاحات کنترل کیفیت
+   ===================================================================== */
+/* منو با آیکون */
+.nav a{display:flex;align-items:center;gap:.4em}
+.nav a .icon{width:1.05em;height:1.05em;opacity:.7}
+.nav a:hover .icon,.nav a.is-active .icon{opacity:1}
+.mobile-nav a>span{display:flex;align-items:center;gap:.6em}
+.mobile-nav a>span .icon{opacity:1;color:var(--primary)}
+.mode-dark .mobile-nav a>span .icon{color:var(--accent)}
+@media (max-width:1180px) and (min-width:961px){.nav a{padding:.45em .6em;font-size:.86rem}.nav a .icon{display:none}}
+
+/* پس‌زمینه‌ی یکدست برای عکس محصولات (تم‌های روشن) */
+.mode-light .card-media,.mode-light .featured-media,.mode-light .qv-media,.mode-light .cart-item img,.mode-light .wish-media,.mode-light .look-item img{background:var(--img-bg,color-mix(in srgb,var(--surface2) 35%,#fff))}
+.mode-light .card-media img,.mode-light .featured-media img,.mode-light .qv-media img,.mode-light .cart-item img,.mode-light .wish-media img,.mode-light .look-item img{mix-blend-mode:multiply}
+.mode-light .card--soft .card-media,.mode-light .card--mono .card-media,.mode-light .card--center .card-media,.mode-light .card--frame .card-media,.mode-light .card--line .card-media,.mode-light .card--menu .card-media{background:var(--img-bg,color-mix(in srgb,var(--surface2) 35%,#fff))}
+
+/* ایمیل: متن و placeholder چپ‌چین */
+input[type="email"],.news-form input{direction:ltr;text-align:left}
+input[type="email"]::placeholder{text-align:left}
+
+/* سکشن نظرات با پس‌زمینه‌ی مجزا */
+.section--reviews{background:var(--surface);overflow:hidden;isolation:isolate}
+.mode-light .section--reviews{background:linear-gradient(160deg,var(--surface2),var(--surface) 60%)}
+.rv-deco{position:absolute;border-radius:50%;z-index:-1;pointer-events:none}
+.rv-deco--1{width:420px;height:420px;top:-160px;inset-inline-end:-120px;background:radial-gradient(circle,color-mix(in srgb,var(--primary) 18%,transparent),transparent 70%)}
+.rv-deco--2{width:360px;height:360px;bottom:-140px;inset-inline-start:-100px;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 16%,transparent),transparent 70%)}
+.rv-quote-bg{position:absolute;width:220px;height:220px;top:40px;inset-inline-end:4%;color:var(--primary);opacity:.06;z-index:-1}
+.section--reviews .review{background:var(--bg);border-color:transparent;box-shadow:0 10px 30px -22px rgba(0,0,0,.35);position:relative}
+.section--reviews .review::before{content:"";position:absolute;top:0;inset-inline-start:24px;width:40px;height:3px;border-radius:0 0 3px 3px;background:var(--primary)}
+.mode-dark .section--reviews .review::before{background:var(--accent)}
+.section--reviews.reviews--quote .review{background:transparent;box-shadow:none}
+.section--reviews.reviews--quote .review::before{display:none}
+.section--reviews.reviews--quote .slider{background:var(--bg);border-radius:var(--radius);padding:clamp(20px,4vw,44px) 0;box-shadow:0 18px 40px -30px rgba(0,0,0,.35)}
+.slider-track{padding:4px 2px 10px}
+
+/* سبد خرید */
+.drawer-head{gap:10px}
+.cart-head-count{margin-inline-end:auto;font-size:.78rem;font-weight:800;padding:.15em .7em;border-radius:99px;background:var(--surface);color:var(--muted)}
+.cart-head-count:empty{display:none}
+.cart-steps{display:flex;gap:6px;padding:14px 22px;margin:0;list-style:none;border-bottom:1px solid var(--line);background:var(--surface)}
+.cart-steps li{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.72rem;font-weight:700;color:var(--muted);position:relative}
+.cart-steps li .icon{width:34px;height:34px;padding:8px;border-radius:50%;background:var(--bg);border:1.5px solid var(--line)}
+.cart-steps li:not(:last-child)::after{content:"";position:absolute;top:17px;inset-inline-start:calc(50% + 22px);inset-inline-end:calc(-50% + 22px);height:2px;background:var(--line)}
+.cart-steps li.is-current,.cart-steps li.is-done{color:var(--text)}
+.cart-steps li.is-current .icon{background:var(--primary);color:var(--primary-ink);border-color:var(--primary)}
+.cart-steps li.is-done .icon{border-color:var(--primary);color:var(--primary)}
+.cart-steps li.is-done::after{background:var(--primary)}
+.cart-item{grid-template-columns:76px 1fr auto;padding:12px;margin-bottom:10px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--surface)}
+.cart-item img{width:76px;height:76px}
+.cart-item .card-cat{font-size:.72rem}
+.cart-price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.cart-price .price-old{font-size:.78rem}
+.cart-item .qty{background:var(--bg)}
+.cart-summary{padding:12px 14px;border-radius:var(--radius-sm);background:var(--bg);border:1px solid var(--line);margin-bottom:14px}
+.cart-row>span:first-child{display:flex;align-items:center;gap:.5em;color:var(--muted)}
+.cart-row .icon{width:1.05em;height:1.05em}
+.cart-row .save{color:#16a34a;font-weight:800}
+.cart-row.total{border-top:1px dashed var(--line);padding-top:12px;margin:10px 0 0}
+.cart-row.total>span:first-child{color:var(--text)}
+.free-ship{padding:10px 12px;border-radius:var(--radius-sm);background:color-mix(in srgb,var(--primary) 8%,var(--bg));font-weight:600}
+.checkout-form{gap:14px}
+.form-note{display:flex;align-items:center;gap:.5em;font-size:.82rem;color:var(--muted);padding:10px 12px;border-radius:var(--radius-sm);background:var(--surface)}
+.form-note .icon{color:#16a34a}
+.checkout-form .field input,.checkout-form .field textarea{background:var(--surface)}
+
+/* علاقه‌مندی‌ها: کارت و دسته‌بندی */
+.wish-group{margin-bottom:22px}
+.wish-group-title{display:flex;align-items:center;gap:8px;font-size:.95rem;margin-bottom:12px}
+.wish-group-title span{font-size:.72rem;padding:.1em .6em;border-radius:99px;background:var(--surface);color:var(--muted)}
+.wish-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.wish-item{position:relative;display:flex;flex-direction:column;padding:0;border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;background:var(--surface)}
+.wish-media{aspect-ratio:1;overflow:hidden}
+.wish-media img{width:100%;height:100%;object-fit:cover;border-radius:0}
+.wish-body{padding:10px;display:flex;flex-direction:column;gap:6px;flex:1}
+.wish-body h4{font-size:.84rem;line-height:1.5}
+.wish-body .price{margin-top:auto;padding:0}
+.wish-body .price-now{font-size:.9rem}
+.wish-body .price-old{font-size:.74rem}
+.wish-body .btn{min-height:36px;font-size:.76rem;margin:0}
+.wish-item .cart-remove{position:absolute;top:8px;inset-inline-end:8px;background:rgba(255,255,255,.92);color:#111}

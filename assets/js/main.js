@@ -1,5 +1,5 @@
 /*!
- * جشنواره — مجموعه‌ی ۱۵ لندینگ فروش ویژه | نسخه‌ی 1.1.0
+ * جشنواره — مجموعه‌ی ۱۵ لندینگ فروش ویژه | نسخه‌ی 1.2.0
  * اسکریپت مشترک همه‌ی لندینگ‌ها (جاوااسکریپت خالص، بدون کتابخانه).
  *
  * تنظیمات هر صفحه از ویژگی‌های data روی تگ <body> خوانده می‌شود:
@@ -175,13 +175,14 @@
     qty = qty || 1;
     var ex = cart.find(function (i) { return i.id === p.id; });
     if (ex) ex.qty = Math.min(99, ex.qty + qty);
-    else cart.push({ id: p.id, name: p.name, price: p.price, img: p.img, qty: qty });
+    else cart.push({ id: p.id, name: p.name, price: p.price, old: p.old, img: p.img, cat: p.cat, qty: qty });
     saveCart();
     toast('«' + esc(p.name) + '» به سبد خرید اضافه شد', 'check');
     $$('.cart-btn').forEach(function (b) { b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); });
   }
   function renderCart() {
     var q = cartQty();
+    var lbl = $('[data-cart-items-label]'); if (lbl) lbl.textContent = q ? fa(q) + ' کالا' : '';
     cartCounts.forEach(function (c) { c.textContent = q ? fa(q) : ''; if (q) c.removeAttribute('data-zero'); else c.setAttribute('data-zero', ''); });
     if (!cartBody) return;
     showStep('items');
@@ -196,7 +197,7 @@
     cartBody.innerHTML = cart.map(function (i) {
       return '<div class="cart-item" data-id="' + esc(i.id) + '">' +
         '<img src="' + esc(i.img) + '" alt="" width="72" height="72" loading="lazy">' +
-        '<div><h4>' + esc(i.name) + '</h4><div class="price-now">' + money(i.price) + '</div>' +
+        '<div>' + (i.cat ? '<span class="card-cat">' + esc(i.cat) + '</span>' : '') + '<h4>' + esc(i.name) + '</h4><div class="cart-price"><span class="price-now">' + money(i.price * i.qty) + '</span>' + (i.old > i.price ? '<span class="price-old">' + fa(i.old * i.qty) + '</span>' : '') + '</div>' +
         '<div class="qty" role="group" aria-label="تعداد"><button type="button" data-q="+1" aria-label="افزایش">' + icon('plus') + '</button>' +
         '<input type="number" min="1" max="99" value="' + i.qty + '" aria-label="تعداد" inputmode="numeric">' +
         '<button type="button" data-q="-1" aria-label="کاهش">' + icon('minus') + '</button></div></div>' +
@@ -204,6 +205,8 @@
     }).join('');
     var total = cartTotal();
     var ship = FREE_SHIP && total >= FREE_SHIP ? 0 : SHIP_COST;
+    var save = cart.reduce(function (s, i) { return s + (i.old > i.price ? (i.old - i.price) * i.qty : 0); }, 0);
+    var sv = $('[data-sum="save"]'); if (sv) { sv.innerHTML = save ? money(save) : '—'; }
     $('[data-sum="sub"]').innerHTML = money(total);
     $('[data-sum="ship"]').innerHTML = ship ? money(ship) : 'رایگان';
     $('[data-sum="total"]').innerHTML = money(total + ship);
@@ -234,6 +237,8 @@
   function showStep(step) {
     $$('[data-step]').forEach(function (s) { s.hidden = s.dataset.step !== step; });
     if (cartFoot && step !== 'items') cartFoot.hidden = true;
+    var order = ['items', 'form', 'done'];
+    $$('[data-step-dot]').forEach(function (li) { var a = order.indexOf(li.dataset.stepDot), b = order.indexOf(step); li.classList.toggle('is-done', a < b); li.classList.toggle('is-current', a === b); });
     var title = $('#cart-title');
     if (title) title.textContent = { items: 'سبد خرید', form: 'اطلاعات ارسال', done: 'سفارش ثبت شد' }[step];
   }
@@ -289,7 +294,7 @@
       var box = all.closest('section');
       $$('[data-product]', box).forEach(function (el) {
         var p = readProduct(el), ex = cart.find(function (i) { return i.id === p.id; });
-        if (ex) ex.qty = Math.min(99, ex.qty + 1); else cart.push({ id: p.id, name: p.name, price: p.price, img: p.img, qty: 1 });
+        if (ex) ex.qty = Math.min(99, ex.qty + 1); else cart.push({ id: p.id, name: p.name, price: p.price, old: p.old, img: p.img, cat: p.cat, qty: 1 });
       });
       saveCart(); toast('همه‌ی محصولات این ست به سبد اضافه شد', 'check'); openLayer($('#cart'));
     }
@@ -335,12 +340,17 @@
       wishBody.innerHTML = '<div class="empty-state"><span class="es-icon">' + icon('heart') + '</span><h3>فهرست علاقه‌مندی‌ها خالی است</h3><p>روی آیکون قلب هر محصول بزنید تا این‌جا ذخیره شود.</p><button type="button" class="btn btn--primary btn--sm" data-go-products>مشاهده‌ی محصولات</button></div>';
       return;
     }
-    wishBody.innerHTML = items.map(function (p) {
-      return '<div class="wish-item" data-product data-id="' + esc(p.id) + '" data-name="' + esc(p.name) + '" data-price="' + p.price + '" data-old="' + p.old + '" data-img="' + esc(p.img) + '" data-desc="' + esc(p.desc) + '" data-cat-name="' + esc(p.cat) + '" data-rating="' + esc(p.rating) + '" data-reviews="' + esc(p.reviews) + '">' +
-        '<img src="' + esc(p.img) + '" alt="" width="72" height="72" loading="lazy">' +
-        '<div><h4>' + esc(p.name) + '</h4><div class="price-now">' + money(p.price) + '</div><button type="button" class="btn btn--primary" data-add>' + icon('bag') + 'افزودن به سبد</button></div>' +
-        '<button type="button" class="cart-remove" data-wish="' + esc(p.id) + '" aria-label="حذف از علاقه‌مندی‌ها">' + icon('trash') + '</button></div>';
+    var groups = {};
+    items.forEach(function (p) { (groups[p.cat || 'سایر'] = groups[p.cat || 'سایر'] || []).push(p); });
+    wishBody.innerHTML = Object.keys(groups).map(function (g) {
+      return '<div class="wish-group"><h3 class="wish-group-title">' + esc(g) + '<span>' + fa(groups[g].length) + '</span></h3><div class="wish-grid">' + groups[g].map(wishCard).join('') + '</div></div>';
     }).join('');
+  }
+  function wishCard(p) {
+      return '<div class="wish-item" data-product data-id="' + esc(p.id) + '" data-name="' + esc(p.name) + '" data-price="' + p.price + '" data-old="' + p.old + '" data-img="' + esc(p.img) + '" data-desc="' + esc(p.desc) + '" data-cat-name="' + esc(p.cat) + '" data-rating="' + esc(p.rating) + '" data-reviews="' + esc(p.reviews) + '">' +
+        '<div class="wish-media"><img src="' + esc(p.img) + '" alt="" width="160" height="160" loading="lazy"></div>' +
+        '<div class="wish-body"><h4>' + esc(p.name) + '</h4><div class="price"><span class="price-now">' + money(p.price) + '</span>' + (p.old ? '<span class="price-old">' + fa(p.old) + '</span>' : '') + '</div><button type="button" class="btn btn--primary btn--block" data-add>' + icon('bag') + 'افزودن به سبد</button></div>' +
+        '<button type="button" class="cart-remove" data-wish="' + esc(p.id) + '" aria-label="حذف از علاقه‌مندی‌ها">' + icon('trash') + '</button></div>';
   }
   document.addEventListener('click', function (e) {
     var g = e.target.closest('[data-go-products]'); if (!g) return;
@@ -414,17 +424,29 @@
     function update() {
       var max = track.scrollWidth - track.clientWidth - 4;
       if (dotsWrap) {
-        var idx = Math.round(pos() / step());
+        var cur = items[Math.round(pos() / step())];
+        var idx = cur ? +cur.dataset.i : 0;
         $$('button', dotsWrap).forEach(function (d, i) { d.setAttribute('aria-current', i === idx ? 'true' : 'false'); });
       }
     }
+    Array.prototype.forEach.call(items, function (it, i) { it.dataset.i = i; });
     if (dotsWrap) {
       dotsWrap.innerHTML = Array.prototype.map.call(items, function (_, i) { return '<button type="button" aria-label="نظر ' + fa(i + 1) + '"></button>'; }).join('');
-      $$('button', dotsWrap).forEach(function (d, i) { d.addEventListener('click', function () { track.scrollTo({ left: -i * step(), behavior: 'smooth' }); }); });
+      $$('button', dotsWrap).forEach(function (d, i) { d.addEventListener('click', function () {
+        var k = Array.prototype.findIndex.call(items, function (it) { return +it.dataset.i === i; });
+        track.scrollTo({ left: -k * step(), behavior: 'smooth' }); restart(); }); });
     }
     function atEnd() { return pos() >= track.scrollWidth - track.clientWidth - 4; }
-    function goNext() { if (atEnd()) track.scrollTo({ left: 0, behavior: 'smooth' }); else track.scrollBy({ left: -step(), behavior: 'smooth' }); }
-    function goPrev() { if (pos() <= 4) track.scrollTo({ left: -(track.scrollWidth - track.clientWidth), behavior: 'smooth' }); else track.scrollBy({ left: step(), behavior: 'smooth' }); }
+    /* لوپ بی‌نهایت: قبل از رسیدن به انتها، اولین نظر به انتهای فهرست منتقل می‌شود */
+    function jump(dx) { track.style.scrollSnapType = 'none'; track.style.scrollBehavior = 'auto'; track.scrollLeft += dx; track.offsetWidth; track.style.scrollSnapType = ''; track.style.scrollBehavior = ''; }
+    function goNext() {
+      if (pos() >= track.scrollWidth - track.clientWidth - step() - 4) { var st = step(); track.appendChild(track.firstElementChild); jump(st); }
+      track.scrollBy({ left: -step(), behavior: 'smooth' });
+    }
+    function goPrev() {
+      if (pos() <= step() - 4) { var st = step(); track.insertBefore(track.lastElementChild, track.firstElementChild); jump(-st); }
+      track.scrollBy({ left: step(), behavior: 'smooth' });
+    }
     if (prev) prev.addEventListener('click', function () { goPrev(); restart(); });
     if (next) next.addEventListener('click', function () { goNext(); restart(); });
     /* حرکت خودکار؛ با رفتن نشانگر یا لمس متوقف می‌شود */
