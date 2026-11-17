@@ -1,0 +1,39 @@
+/*!
+ * جشنواره — لندینگ ۱۳: آرایشی و مراقبت پوست
+ * رنگ‌ها، فونت و جزئیات ظاهری اختصاصی این لندینگ.
+ * برای تغییر رنگ کافی است مقادیر زیر را عوض کنید.
+ */
+:root{
+  --bg:#f5efe8;
+  --surface:#fbf8f4;
+  --surface2:#ebe1d6;
+  --text:#2b2522;
+  --muted:#7f716a;
+  --primary:#2b2522;
+  --primary-ink:#f5efe8;
+  --accent:#b88a72;
+  --line:rgba(43,37,34,.14);
+  --radius:0px;
+  --radius-sm:0px;
+  --btn-radius:0px;
+  --font-display:'El Messiri','Vazirmatn',sans-serif;
+  --footer-bg:color-mix(in srgb,var(--text) 92%,#000);
+  --footer-ink:#ece8e4;
+  --pattern-on-primary:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><circle cx='3' cy='3' r='1.6' fill='%23ffffff'/></svg>");
+}
+.hero-title,.section-title,.featured-body h2,.about-body h2,.faq-aside h2,.bundle h3,.banner h3,.news h2{font-weight:400}
+.header{background:rgba(245,239,232,.88)}
+.topbar{background:var(--accent);color:#fff}
+.logo-mark{border-radius:50%}
+.btn{border-radius:0;letter-spacing:.02em}
+.card--center .card-media{background:#fff}
+.feature{background:transparent;border:0;border-radius:0;flex-direction:column;align-items:center;text-align:center}
+.feature-icon{border-radius:50%;background:var(--surface2);color:var(--accent)}
+.cats--circles .cat-media{box-shadow:none;border:1px solid var(--line);padding:6px;background:#fff}
+.cats--circles .cat-media img{border-radius:50%}
+.news{background:var(--surface2);color:var(--text);border-radius:0}
+.news .news-form{background:#fff;border-color:var(--line)}
+.news .news-form .btn{background:var(--text);color:var(--bg)}
+.chip{background:var(--surface2);color:var(--accent)}
+.filter-tab{border-radius:0}
+.faq-item,.bundle,.stat,.review{border-radius:0}

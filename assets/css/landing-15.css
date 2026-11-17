@@ -1,0 +1,39 @@
+/*!
+ * جشنواره — لندینگ ۱۵: حراج آخر فصل پوشاک
+ * رنگ‌ها، فونت و جزئیات ظاهری اختصاصی این لندینگ.
+ * برای تغییر رنگ کافی است مقادیر زیر را عوض کنید.
+ */
+:root{
+  --bg:#f2ede4;
+  --surface:#faf7f2;
+  --surface2:#e5ddd0;
+  --text:#111111;
+  --muted:#6b655c;
+  --primary:#111111;
+  --primary-ink:#f2ede4;
+  --accent:#c1121f;
+  --line:rgba(17,17,17,.16);
+  --radius:0px;
+  --radius-sm:0px;
+  --btn-radius:0px;
+  --font-display:'Vazirmatn','Vazirmatn',sans-serif;
+  --footer-bg:#111111;
+  --footer-ink:#ece8e4;
+  --pattern-on-primary:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><circle cx='3' cy='3' r='1.6' fill='%23ffffff'/></svg>");
+}
+.hero-title,.section-title,.featured-body h2,.about-body h2,.faq-aside h2,.bundle h3,.banner h3,.news h2{font-weight:700}
+.section-title{font-size:clamp(2rem,4.8vw,3.6rem);letter-spacing:-.01em}
+.topbar{background:var(--accent);color:#fff;font-weight:700}
+.header{background:rgba(242,237,228,.9)}
+.logo-mark{border-radius:0}
+.btn{border-radius:0}
+.feature{background:transparent;border:1px solid var(--line);border-radius:0}
+.feature-icon{border-radius:0;background:var(--text);color:var(--bg)}
+.filter-tab{border-radius:0}
+.cats--banner .cat-media{aspect-ratio:4/5}
+.news{background:var(--text);color:var(--bg);border-radius:0}
+.news .news-form{border-radius:0}
+.news .news-form .btn{background:var(--accent);color:#fff}
+.banner,.featured-media,.bundle,.review,.faq-item,.stat,.gallery a,.about-media img{border-radius:0}
+.price-now{color:var(--accent)}
+.card--editorial .card-title{font-family:var(--font-display);font-size:1.1rem;font-weight:600}

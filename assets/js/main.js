@@ -1,973 +1,452 @@
-/* ==========================================================================
-   قالب شب‌چله – اسکریپت اصلی
-   نسخه: 1.1.0
-   --------------------------------------------------------------------------
-   بدون jQuery و بدون کتابخانه‌ی خارجی. تغییرات شخصی خود را در custom.js بنویسید
-   تا با به‌روزرسانی قالب از بین نروند.
-   ========================================================================== */
-
-/* ==========================================================================
-   تنظیمات قابل ویرایش
-   ========================================================================== */
-
-/**
- * تاریخ و ساعت پایان کمپین (تایمر شمارش معکوس)
- * قالب: سال-ماه-روز (میلادی) T ساعت:دقیقه:ثانیه + اختلاف ساعت ایران (+03:30)
- * مثال پیش‌فرض: پایان روز ۳۰ آذر ۱۴۰۵ (شب یلدا) = 2026-12-21 ساعت ۲۳:۵۹:۵۹ به وقت تهران
+/*!
+ * جشنواره — مجموعه‌ی ۱۵ لندینگ فروش ویژه | نسخه‌ی 1.0.0
+ * اسکریپت مشترک همه‌ی لندینگ‌ها (جاوااسکریپت خالص، بدون کتابخانه).
+ *
+ * تنظیمات هر صفحه از ویژگی‌های data روی تگ <body> خوانده می‌شود:
+ *   data-store        شناسه‌ی یکتای فروشگاه (برای ذخیره‌ی سبد خرید)
+ *   data-free-ship    حداقل مبلغ ارسال رایگان (تومان)
+ *   data-ship-cost    هزینه‌ی ارسال (تومان)
+ *
+ * اطلاعات هر محصول روی خود کارت محصول (ویژگی‌های data-*) نوشته شده است؛
+ * برای تغییر نام، قیمت یا عکس فقط همان کارت را ویرایش کنید.
  */
-const CAMPAIGN_END = '2026-12-21T23:59:59+03:30';
-
-/**
- * پیام بعد از پایان زمان کمپین
- */
-const CAMPAIGN_ENDED_TEXT = 'کمپین به پایان رسید';
-
 (function () {
   'use strict';
 
-  const root = document.documentElement;
-  const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const prefersReducedMotion = () => reduceMotionQuery.matches || root.classList.contains('no-motion');
+  var body = document.body;
+  var STORE = body.dataset.store || 'store';
+  var FREE_SHIP = +body.dataset.freeShip || 0;
+  var SHIP_COST = +body.dataset.shipCost || 0;
+  var KEY_CART = 'jashn_cart_' + STORE;
+  var KEY_WISH = 'jashn_wish_' + STORE;
 
-  /* ------------------------------------------------------------------------
-     ابزار: تبدیل اعداد انگلیسی به فارسی
-     ------------------------------------------------------------------------ */
-  const FA_DIGITS = '۰۱۲۳۴۵۶۷۸۹';
-  const toFa = (value) => String(value).replace(/\d/g, (d) => FA_DIGITS[d]);
-  const pad = (n) => toFa(String(n).padStart(2, '0'));
-  const toEn = (value) => String(value).replace(/[۰-۹]/g, (d) => FA_DIGITS.indexOf(d));
+  /* ---------- ابزارها ---------- */
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+  var fa = function (n) { return Number(n).toLocaleString('fa-IR'); };
+  var money = function (n) { return fa(n) + ' <small>تومان</small>'; };
+  var store = {
+    get: function (k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* حالت خصوصی مرورگر */ } }
+  };
+  var icon = function (id) { return '<svg class="icon" aria-hidden="true"><use href="#i-' + id + '"/></svg>'; };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
 
-  /* ------------------------------------------------------------------------
-     هدر شیشه‌ای: با اسکرول کلاس is-scrolled می‌گیرد
-     ------------------------------------------------------------------------ */
-  function initHeader() {
-    const header = document.getElementById('site-header');
-    if (!header) return;
-
-    let ticking = false;
-    const update = () => {
-      const scrolled = window.scrollY > 24;
-      header.classList.toggle('is-scrolled', scrolled);
-      root.classList.toggle('bar-away', scrolled); // نوار اعلان با اسکرول کنار می‌رود
-      ticking = false;
-    };
-
-    window.addEventListener(
-      'scroll',
-      () => {
-        if (!ticking) {
-          ticking = true;
-          requestAnimationFrame(update);
-        }
-      },
-      { passive: true }
-    );
-    update();
+  /* ---------- پیام کوتاه (Toast) ---------- */
+  var toastWrap = document.createElement('div');
+  toastWrap.className = 'toast-wrap';
+  toastWrap.setAttribute('aria-live', 'polite');
+  body.appendChild(toastWrap);
+  function toast(msg, ic) {
+    var t = document.createElement('div');
+    t.className = 'toast';
+    t.innerHTML = icon(ic || 'check') + '<span>' + msg + '</span>';
+    toastWrap.appendChild(t);
+    setTimeout(function () { t.classList.add('out'); setTimeout(function () { t.remove(); }, 320); }, 2600);
   }
 
-  /* ------------------------------------------------------------------------
-     منوی موبایل تمام‌صفحه (با کیبورد و کلید Esc قابل کنترل است)
-     ------------------------------------------------------------------------ */
-  function initMobileMenu() {
-    const toggle = document.querySelector('[data-menu-toggle]');
-    const menu = document.querySelector('[data-mobile-menu]');
-    if (!toggle || !menu) return;
-
-    const header = document.getElementById('site-header');
-    const focusables = () => menu.querySelectorAll('a[href], button:not([disabled])');
-
-    const setOpen = (open) => {
-      toggle.setAttribute('aria-expanded', String(open));
-      toggle.setAttribute('aria-label', open ? 'بستن منو' : 'باز کردن منو');
-      menu.classList.toggle('is-open', open);
-      document.body.classList.toggle('is-locked', open);
-      if (header) header.classList.toggle('is-scrolled', open || window.scrollY > 24);
-
-      if (open) {
-        menu.removeAttribute('inert');
-        const first = focusables()[0];
-        if (first) setTimeout(() => first.focus({ preventScroll: true }), 350);
-      } else {
-        menu.setAttribute('inert', '');
-      }
-    };
-
-    toggle.addEventListener('click', () => {
-      setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+  /* ---------- قفل اسکرول و مدیریت پنجره‌ها ---------- */
+  var openLayers = [];
+  var lastFocus = null;
+  function openLayer(el) {
+    lastFocus = document.activeElement;
+    el.classList.add('is-open');
+    el.removeAttribute('aria-hidden');
+    openLayers.push(el);
+    body.classList.add('no-scroll');
+    var f = el.querySelector('[data-autofocus]') || el.querySelector('button, a, input');
+    if (f) setTimeout(function () { f.focus(); }, 60);
+  }
+  function closeLayer(el) {
+    el.classList.remove('is-open');
+    el.setAttribute('aria-hidden', 'true');
+    openLayers = openLayers.filter(function (x) { return x !== el; });
+    if (!openLayers.length) body.classList.remove('no-scroll');
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && openLayers.length) closeLayer(openLayers[openLayers.length - 1]);
+  });
+  $$('[data-close]').forEach(function (b) {
+    b.addEventListener('click', function () { closeLayer(b.closest('.drawer, .modal')); });
+  });
+  $$('[data-open]').forEach(function (b) {
+    b.addEventListener('click', function (e) {
+      var t = document.getElementById(b.dataset.open);
+      if (t) { e.preventDefault(); openLayer(t); }
     });
+  });
 
-    // بستن منو بعد از انتخاب لینک
-    menu.addEventListener('click', (event) => {
-      if (event.target.closest('a')) setOpen(false);
-    });
-
-    document.addEventListener('keydown', (event) => {
-      if (toggle.getAttribute('aria-expanded') !== 'true') return;
-
-      if (event.key === 'Escape') {
-        setOpen(false);
-        toggle.focus();
-        return;
-      }
-
-      // نگه داشتن فوکوس داخل منو و دکمه‌ی بستن
-      if (event.key === 'Tab') {
-        const items = [toggle, ...focusables()];
-        const first = items[0];
-        const last = items[items.length - 1];
-        if (event.shiftKey && document.activeElement === first) {
-          event.preventDefault();
-          last.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-          event.preventDefault();
-          first.focus();
-        }
-      }
-    });
-
-    // اگر صفحه بزرگ شد، منو بسته شود
-    window.matchMedia('(min-width: 1024px)').addEventListener('change', (e) => {
-      if (e.matches) setOpen(false);
-    });
+  /* ---------- نوار اعلان ---------- */
+  var topbar = $('.topbar');
+  if (topbar) {
+    if (store.get('jashn_topbar_' + STORE, false)) topbar.classList.add('is-hidden');
+    var tc = $('.topbar-close', topbar);
+    if (tc) tc.addEventListener('click', function () { topbar.classList.add('is-hidden'); store.set('jashn_topbar_' + STORE, true); });
   }
 
-  /* ------------------------------------------------------------------------
-     تایمر شمارش معکوس
-     تاریخ پایان در متغیر CAMPAIGN_END (بالای همین فایل) تنظیم می‌شود.
-     ------------------------------------------------------------------------ */
-  function initCountdown() {
-    const timers = document.querySelectorAll('[data-countdown]');
-    if (!timers.length) return;
+  /* ---------- هدر چسبان، دکمه‌ی بالا و لینک فعال منو ---------- */
+  var header = $('.header');
+  var toTop = $('.to-top');
+  var navLinks = $$('.nav a[href^="#"]');
+  var sections = navLinks.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var ticking = false;
+  function onScroll() {
+    var y = window.scrollY;
+    if (header) header.classList.toggle('is-scrolled', y > 10);
+    if (toTop) toTop.classList.toggle('is-visible', y > 700);
+    var current = -1;
+    sections.forEach(function (s, i) { if (s && s.getBoundingClientRect().top < 160) current = i; });
+    navLinks.forEach(function (a, i) { a.classList.toggle('is-active', i === current); });
+    ticking = false;
+  }
+  window.addEventListener('scroll', function () { if (!ticking) { requestAnimationFrame(onScroll); ticking = true; } }, { passive: true });
+  onScroll();
+  if (toTop) toTop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  $$('.mobile-nav a').forEach(function (a) {
+    a.addEventListener('click', function () { var d = a.closest('.drawer'); if (d) closeLayer(d); });
+  });
 
-    const end = new Date(CAMPAIGN_END).getTime();
-    if (Number.isNaN(end)) return;
-
-    const state = {};
-
-    const render = () => {
-      const diff = Math.max(0, end - Date.now());
-      const values = {
-        days: Math.floor(diff / 86400000),
-        hours: Math.floor((diff / 3600000) % 24),
-        minutes: Math.floor((diff / 60000) % 60),
-        seconds: Math.floor((diff / 1000) % 60),
-      };
-
-      timers.forEach((timer) => {
-        Object.keys(values).forEach((key) => {
-          const el = timer.querySelector(`[data-cd="${key}"]`);
-          if (!el) return;
-          const text = pad(values[key]);
-          if (el.textContent !== text) {
-            el.textContent = text;
-            if (state[key] !== undefined && !prefersReducedMotion() && el.animate) {
-              el.animate(
-                [
-                  { opacity: 0.35, transform: 'translateY(-0.35rem)' },
-                  { opacity: 1, transform: 'none' },
-                ],
-                { duration: 600, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' }
-              );
-            }
-          }
-        });
-
-        if (diff === 0) {
-          timer.classList.add('is-ended');
-          const ended = timer.querySelector('[data-countdown-ended]');
-          if (ended) {
-            ended.textContent = CAMPAIGN_ENDED_TEXT;
-            ended.hidden = false;
-          }
-        }
-      });
-
-      Object.assign(state, values);
-      return diff;
-    };
-
-    if (render() === 0) return;
-
-    const loop = setInterval(() => {
-      if (render() === 0) clearInterval(loop);
-    }, 1000);
+  /* ---------- انیمیشن ورود ---------- */
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); } });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    $$('.reveal').forEach(function (el) { io.observe(el); });
+  } else {
+    $$('.reveal').forEach(function (el) { el.classList.add('is-in'); });
   }
 
-  /* ------------------------------------------------------------------------
-     پارالاکس ظریف روی تزئینات
-     data-parallax : سرعت جابه‌جایی نسبت به اسکرول (مثلاً 0.2)
-     data-pointer  : جابه‌جایی با حرکت ماوس به پیکسل (فقط دسکتاپ)
-     ------------------------------------------------------------------------ */
-  function initParallax() {
-    const layers = Array.from(document.querySelectorAll('[data-parallax], [data-pointer]'));
-    if (!layers.length || prefersReducedMotion()) return;
-
-    const finePointer = window.matchMedia('(pointer: fine)').matches;
-    const items = layers.map((el) => ({
-      el,
-      speed: parseFloat(el.dataset.parallax || '0'),
-      range: finePointer ? parseFloat(el.dataset.pointer || '0') : 0,
-      section: el.closest('section') || document.body,
-    }));
-
-    let pointerX = 0;
-    let pointerY = 0;
-    let currentX = 0;
-    let currentY = 0;
-    let rafId = null;
-
-    const frame = () => {
-      // حرکت نرم ماوس با میان‌یابی
-      currentX += (pointerX - currentX) * 0.06;
-      currentY += (pointerY - currentY) * 0.06;
-
-      // ابتدا همه‌ی اندازه‌ها خوانده می‌شوند، بعد همه‌ی تغییرات نوشته می‌شوند (بدون layout اضافه)
-      const viewport = window.innerHeight;
-      const rects = new Map();
-      items.forEach((item) => {
-        if (!rects.has(item.section)) rects.set(item.section, item.section.getBoundingClientRect());
-      });
-      items.forEach((item) => {
-        const rect = rects.get(item.section);
-        if (rect.bottom < 0 || rect.top > viewport) return;
-        const y = -rect.top * item.speed + currentY * item.range;
-        const x = currentX * item.range;
-        item.el.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0)`;
-      });
-
-      const settled = Math.abs(pointerX - currentX) < 0.001 && Math.abs(pointerY - currentY) < 0.001;
-      rafId = settled ? null : requestAnimationFrame(frame);
-    };
-
-    const request = () => {
-      if (rafId === null) rafId = requestAnimationFrame(frame);
-    };
-
-    window.addEventListener('scroll', request, { passive: true });
-    window.addEventListener('resize', request, { passive: true });
-
-    if (finePointer) {
-      window.addEventListener(
-        'pointermove',
-        (event) => {
-          pointerX = (event.clientX / window.innerWidth - 0.5) * 2;
-          pointerY = (event.clientY / window.innerHeight - 0.5) * 2;
-          request();
-        },
-        { passive: true }
-      );
+  /* ---------- شمارش معکوس ----------
+   * روی عنصر .countdown یکی از این دو را بگذارید:
+   *   data-deadline="2026-12-21T23:59:00+03:30"  تاریخ پایان ثابت
+   *   data-days="3"                               پایان متحرک: چند روز بعد از اولین بازدید هر کاربر
+   */
+  $$('.countdown').forEach(function (cd) {
+    var end;
+    if (cd.dataset.deadline) {
+      end = new Date(cd.dataset.deadline).getTime();
+    } else {
+      var k = 'jashn_cd_' + STORE;
+      end = store.get(k, 0);
+      var span = (+cd.dataset.days || 3) * 864e5;
+      if (!end || end < Date.now()) { end = Date.now() + span; store.set(k, end); }
     }
+    var parts = { d: $('[data-cd="d"]', cd), h: $('[data-cd="h"]', cd), m: $('[data-cd="m"]', cd), s: $('[data-cd="s"]', cd) };
+    function pad(n) { return String(n < 10 ? '0' + n : n).replace(/\d/g, function (x) { return '۰۱۲۳۴۵۶۷۸۹'[x]; }); }
+    function tick() {
+      var diff = Math.max(0, end - Date.now());
+      var d = Math.floor(diff / 864e5), h = Math.floor(diff / 36e5) % 24, m = Math.floor(diff / 6e4) % 60, s = Math.floor(diff / 1e3) % 60;
+      if (parts.d) parts.d.textContent = pad(d);
+      if (parts.h) parts.h.textContent = pad(h);
+      if (parts.m) parts.m.textContent = pad(m);
+      if (parts.s) parts.s.textContent = pad(s);
+      if (!diff) { cd.classList.add('is-ended'); clearInterval(timer); }
+    }
+    var timer = setInterval(tick, 1000);
+    tick();
+  });
 
-    request();
+  /* ---------- اطلاعات محصول از روی کارت ---------- */
+  function readProduct(el) {
+    var d = el.dataset;
+    return { id: d.id, name: d.name, price: +d.price, old: +d.old || 0, img: d.img, desc: d.desc || '', cat: d.catName || '', rating: d.rating || '', reviews: d.reviews || '' };
+  }
+  function findProduct(id) {
+    var el = document.querySelector('[data-product][data-id="' + id + '"]');
+    return el ? readProduct(el) : null;
   }
 
-  /* ------------------------------------------------------------------------
-     نوار اعلان بالای صفحه (قابل بستن؛ تا پایان همان نشست بسته می‌ماند)
-     ------------------------------------------------------------------------ */
-  function initAnnouncementBar() {
-    const bar = document.querySelector('[data-announce]');
-    if (!bar) return;
+  /* ---------- سبد خرید ---------- */
+  var cart = store.get(KEY_CART, []);
+  var cartBody = $('#cart-items');
+  var cartFoot = $('#cart-foot');
+  var cartCounts = $$('[data-cart-count]');
 
-    const close = bar.querySelector('[data-announce-close]');
-    if (!close) return;
-
-    close.addEventListener('click', () => {
-      root.classList.add('bar-closed');
-      bar.setAttribute('aria-hidden', 'true');
-      try {
-        sessionStorage.setItem('shab-bar-closed', '1');
-      } catch (e) {
-        /* حافظه‌ی مرورگر در دسترس نیست؛ مشکلی ایجاد نمی‌کند */
-      }
-      const skip = document.querySelector('.skip-link');
-      if (skip) skip.focus({ preventScroll: true });
-    });
+  function saveCart() { store.set(KEY_CART, cart); renderCart(); }
+  function cartTotal() { return cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0); }
+  function cartQty() { return cart.reduce(function (s, i) { return s + i.qty; }, 0); }
+  function addToCart(p, qty) {
+    qty = qty || 1;
+    var ex = cart.find(function (i) { return i.id === p.id; });
+    if (ex) ex.qty = Math.min(99, ex.qty + qty);
+    else cart.push({ id: p.id, name: p.name, price: p.price, img: p.img, qty: qty });
+    saveCart();
+    toast('«' + esc(p.name) + '» به سبد خرید اضافه شد', 'check');
+    $$('.cart-btn').forEach(function (b) { b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); });
   }
-
-  /* ------------------------------------------------------------------------
-     ظاهر شدن نرم عناصر هنگام اسکرول
-     هر عنصری با کلاس reveal یا reveal-clip وقتی وارد صفحه شود کلاس is-visible می‌گیرد.
-     تأخیر هر عنصر با style="--d:200ms" تنظیم می‌شود.
-     ------------------------------------------------------------------------ */
-  function initReveal() {
-    const items = document.querySelectorAll('.reveal, .reveal-clip');
-    if (!items.length) return;
-
-    if (prefersReducedMotion() || !('IntersectionObserver' in window)) {
-      items.forEach((el) => el.classList.add('is-visible'));
+  function renderCart() {
+    var q = cartQty();
+    cartCounts.forEach(function (c) { c.textContent = q ? fa(q) : ''; if (q) c.removeAttribute('data-zero'); else c.setAttribute('data-zero', ''); });
+    if (!cartBody) return;
+    showStep('items');
+    if (!cart.length) {
+      cartBody.innerHTML = '<div class="cart-empty">' + icon('bag') + '<p>سبد خرید شما خالی است.</p><button type="button" class="btn btn--primary btn--sm" data-cart-shop style="margin-top:16px">مشاهده‌ی محصولات</button></div>';
+      cartFoot.hidden = true;
+      var shop = $('[data-cart-shop]', cartBody);
+      if (shop) shop.addEventListener('click', function () { closeLayer($('#cart')); location.hash = '#products'; });
       return;
     }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
-        });
-      },
-      // threshold 0: هر عنصری که حتی کمی داخل صفحه باشد (مثل محتوای بلند هنگام لود) فوراً نمایش داده می‌شود
-      { rootMargin: '0px 0px -40px 0px', threshold: 0 }
-    );
-
-    items.forEach((el) => observer.observe(el));
-  }
-
-  /* ------------------------------------------------------------------------
-     سبد خرید کشویی (mini-cart)
-     - سبد فقط سمت کاربر و نمایشی است و در localStorage مرورگر ذخیره می‌شود؛
-       برای پرداخت واقعی باید به فروشگاه یا بک‌اند شما وصل شود (Help.pdf).
-     - هر محصول قابل افزودن، عنصری با ویژگی data-product است:
-         data-product-id    شناسه‌ی یکتا (انگلیسی)
-         data-product-name  نام محصول
-         data-product-price قیمت به تومان، فقط عدد انگلیسی (مثل 1470000)
-         data-product-image مسیر تصویر کوچک
-       و دکمه‌ای با data-add-to-cart داخل آن.
-     ------------------------------------------------------------------------ */
-  const CART_KEY = 'shab-cart';
-
-  const escapeHtml = (text) =>
-    String(text).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-
-  const cartStore = {
-    read() {
-      try {
-        const items = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
-        return Array.isArray(items) ? items.filter((i) => i && i.id && i.qty > 0) : [];
-      } catch (e) {
-        return [];
-      }
-    },
-    write(items) {
-      try {
-        localStorage.setItem(CART_KEY, JSON.stringify(items));
-      } catch (e) {
-        /* حافظه‌ی مرورگر در دسترس نیست؛ سبد فقط تا رفرش بعدی می‌ماند */
-      }
-    },
-  };
-
-  function initCart() {
-    const panel = document.querySelector('[data-mini-cart]');
-    const overlay = document.querySelector('[data-cart-overlay]');
-    const openers = document.querySelectorAll('[data-cart-open]');
-    const badges = document.querySelectorAll('[data-cart-count]');
-    let items = cartStore.read();
-    let lastOpener = null;
-
-    const list = panel && panel.querySelector('[data-cart-items]');
-    const empty = panel && panel.querySelector('[data-cart-empty]');
-    const foot = panel && panel.querySelector('[data-cart-foot]');
-    const total = panel && panel.querySelector('[data-cart-total]');
-    const headingCount = panel && panel.querySelector('[data-cart-heading-count]');
-    const status = panel && panel.querySelector('[data-cart-status]');
-
-    const count = () => items.reduce((sum, i) => sum + i.qty, 0);
-
-    const bump = (badge) => {
-      if (prefersReducedMotion() || !badge.animate) return;
-      badge.animate(
-        [{ transform: 'scale(1)' }, { transform: 'scale(1.45)', offset: 0.35 }, { transform: 'scale(0.9)', offset: 0.7 }, { transform: 'scale(1)' }],
-        { duration: 700, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' }
-      );
-    };
-
-    const renderBadges = (animate) => {
-      const n = count();
-      badges.forEach((badge) => {
-        badge.textContent = toFa(n);
-        badge.hidden = n === 0;
-        if (animate && n) bump(badge);
-      });
-      openers.forEach((btn) => btn.setAttribute('aria-label', n ? `سبد خرید، ${toFa(n)} کالا` : 'سبد خرید، خالی'));
-    };
-
-    const render = () => {
-      if (!panel) return;
-      const n = count();
-      list.innerHTML = items
-        .map((item) => {
-          const name = escapeHtml(item.name);
-          return `<li class="cart-item" data-id="${escapeHtml(item.id)}">
-  <img class="cart-thumb" src="${escapeHtml(item.image)}" width="80" height="80" alt="">
-  <div class="cart-info">
-    <p class="cart-name">${name}</p>
-    <p class="cart-price"><span data-price>${formatPrice(item.price * item.qty)}</span> <span class="currency">تومان</span></p>
-    <div class="cart-qty" role="group" aria-label="تعداد ${name}">
-      <button type="button" data-qty="1" aria-label="افزایش تعداد ${name}">+</button>
-      <span aria-live="off">${toFa(item.qty)}</span>
-      <button type="button" data-qty="-1" aria-label="کاهش تعداد ${name}">−</button>
-    </div>
-  </div>
-  <button type="button" class="cart-remove" data-remove aria-label="حذف ${name} از سبد">
-    <svg aria-hidden="true"><use href="#i-close"/></svg>
-  </button>
-</li>`;
-        })
-        .join('');
-      list.hidden = n === 0;
-      empty.hidden = n !== 0;
-      foot.hidden = n === 0;
-      total.textContent = formatPrice(items.reduce((sum, i) => sum + i.price * i.qty, 0));
-      headingCount.textContent = n ? `(${toFa(n)})` : '';
-      initNumberSeparators(panel);
-      // اطلاع به اسکریپت‌های دیگر (مثلاً سوییچر تم دمو برای تعویض تصاویر نمونه)
-      document.dispatchEvent(new CustomEvent('shab:cart-render'));
-    };
-
-    const save = (animate) => {
-      cartStore.write(items);
-      renderBadges(animate);
-      render();
-    };
-
-    const announce = (text) => {
-      if (status) status.textContent = text;
-    };
-
-    /* ---- افزودن به سبد ---- */
-    document.querySelectorAll('[data-add-to-cart]').forEach((button) => {
-      const label = button.querySelector('[data-cart-label]');
-      const icon = button.querySelector('use');
-      const original = label ? label.textContent : '';
-      const originalIcon = icon ? icon.getAttribute('href') : '';
-      let timer = null;
-
-      button.addEventListener('click', () => {
-        const product = button.closest('[data-product]');
-        if (!product) return;
-        const data = product.dataset;
-        const id = data.productId;
-        const existing = items.find((i) => i.id === id);
-        if (existing) {
-          existing.qty += 1;
-        } else {
-          items.push({
-            id,
-            name: data.productName,
-            price: parseInt(data.productPrice, 10) || 0,
-            // مسیر کامل ذخیره می‌شود تا در همه‌ی صفحه‌ها درست نمایش داده شود
-            image: new URL(data.productImage, document.baseURI).href,
-            qty: 1,
-          });
-        }
-        save(true);
-        announce(`${data.productName} به سبد اضافه شد`);
-
-        // حالت «اضافه شد»: دکمه کامل طلایی می‌شود، بعد از ۱.۸ ثانیه به حالت عادی برمی‌گردد
-        button.classList.add('is-added');
-        if (label) label.textContent = 'به سبد اضافه شد';
-        if (icon && originalIcon === '#i-bag') icon.setAttribute('href', '#i-check');
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-          button.classList.remove('is-added');
-          if (label) label.textContent = original;
-          if (icon) icon.setAttribute('href', originalIcon);
-        }, 1800);
-      });
-    });
-
-    renderBadges(false);
-    if (!panel) return;
-    render();
-
-    /* ---- تعداد و حذف ---- */
-    list.addEventListener('click', (event) => {
-      const row = event.target.closest('.cart-item');
-      if (!row) return;
-      const item = items.find((i) => i.id === row.dataset.id);
-      if (!item) return;
-      const qtyBtn = event.target.closest('[data-qty]');
-      const removeBtn = event.target.closest('[data-remove]');
-      const index = items.indexOf(item);
-
-      if (qtyBtn) {
-        item.qty += parseInt(qtyBtn.dataset.qty, 10);
-        if (item.qty < 1) items.splice(index, 1);
-        announce(item.qty < 1 ? `${item.name} از سبد حذف شد` : `تعداد ${item.name}: ${toFa(item.qty)}`);
-      } else if (removeBtn) {
-        items.splice(index, 1);
-        announce(`${item.name} از سبد حذف شد`);
-      } else {
-        return;
-      }
-      const action = qtyBtn ? `[data-qty="${qtyBtn.dataset.qty}"]` : null;
-      save(false);
-
-      // فوکوس کیبورد در جای منطقی بماند
-      const sameRow = action && list.querySelector(`.cart-item[data-id="${CSS.escape(item.id)}"] ${action}`);
-      const nextRow = list.querySelectorAll('.cart-item')[Math.min(index, items.length - 1)];
-      const target = sameRow || (nextRow && nextRow.querySelector('[data-remove]')) || panel.querySelector('[data-cart-browse]');
-      if (target) target.focus();
-    });
-
-    /* ---- باز و بسته کردن پنل ---- */
-    const focusables = () =>
-      Array.from(panel.querySelectorAll('a[href], button:not([disabled])')).filter((el) => !el.closest('[hidden]'));
-
-    const isOpen = () => panel.classList.contains('is-open');
-
-    const setOpen = (open, opener) => {
-      if (open === isOpen()) return;
-      panel.classList.toggle('is-open', open);
-      if (overlay) overlay.classList.toggle('is-open', open);
-      document.body.classList.toggle('is-locked', open);
-      openers.forEach((btn) => btn.setAttribute('aria-expanded', String(open)));
-
-      if (open) {
-        lastOpener = opener || document.activeElement;
-        panel.removeAttribute('inert');
-        const closeBtn = panel.querySelector('[data-cart-close]');
-        setTimeout(() => closeBtn && closeBtn.focus({ preventScroll: true }), 60);
-      } else {
-        panel.setAttribute('inert', '');
-        if (lastOpener && document.body.contains(lastOpener)) lastOpener.focus({ preventScroll: true });
-      }
-    };
-
-    openers.forEach((btn) =>
-      btn.addEventListener('click', () => {
-        // اگر منوی موبایل باز است، اول بسته شود
-        const menuToggle = document.querySelector('[data-menu-toggle][aria-expanded="true"]');
-        if (menuToggle) menuToggle.click();
-        setOpen(!isOpen(), btn);
-      })
-    );
-    panel.querySelectorAll('[data-cart-close]').forEach((btn) => btn.addEventListener('click', () => setOpen(false)));
-    if (overlay) overlay.addEventListener('click', () => setOpen(false));
-    panel.querySelectorAll('[data-cart-browse]').forEach((link) => link.addEventListener('click', () => setOpen(false)));
-
-    document.addEventListener('keydown', (event) => {
-      if (!isOpen()) return;
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        setOpen(false);
-        return;
-      }
-      if (event.key === 'Tab') {
-        const els = focusables();
-        if (!els.length) return;
-        const first = els[0];
-        const last = els[els.length - 1];
-        if (event.shiftKey && (document.activeElement === first || !panel.contains(document.activeElement))) {
-          event.preventDefault();
-          last.focus();
-        } else if (!event.shiftKey && (document.activeElement === last || !panel.contains(document.activeElement))) {
-          event.preventDefault();
-          first.focus();
-        }
-      }
-    });
-
-    // هماهنگی بین تب‌های باز همین سایت
-    window.addEventListener('storage', (event) => {
-      if (event.key !== CART_KEY) return;
-      items = cartStore.read();
-      renderBadges(false);
-      render();
-    });
-  }
-
-  /* ------------------------------------------------------------------------
-     دکمه‌ی علاقه‌مندی (قلب) روی کارت محصول
-     ------------------------------------------------------------------------ */
-  function initWishlist() {
-    document.querySelectorAll('[data-wish]').forEach((button) => {
-      button.addEventListener('click', () => {
-        const pressed = button.getAttribute('aria-pressed') === 'true';
-        button.setAttribute('aria-pressed', String(!pressed));
-      });
-    });
-  }
-
-  /* ------------------------------------------------------------------------
-     سکشن sticky محصول شاخص: با رسیدن هر مرحله به وسط صفحه،
-     تصویر، شماره و توضیح کوتاه سمت تصویر عوض می‌شود.
-     ------------------------------------------------------------------------ */
-  function initFeature() {
-    const wrap = document.querySelector('[data-feature]');
-    if (!wrap || !('IntersectionObserver' in window)) return;
-
-    const steps = Array.from(wrap.querySelectorAll('[data-feature-step]'));
-    const images = wrap.querySelectorAll('[data-feature-img]');
-    const dots = wrap.querySelectorAll('[data-feature-dot]');
-    const current = wrap.querySelector('[data-feature-current]');
-    const caption = wrap.querySelector('[data-feature-caption]');
-    let active = 0;
-
-    const activate = (index) => {
-      if (index === active) return;
-      active = index;
-      steps.forEach((step, i) => step.classList.toggle('is-active', i === index));
-      images.forEach((img, i) => img.classList.toggle('is-active', i === index));
-      dots.forEach((dot, i) => dot.classList.toggle('is-active', i === index));
-      if (current) current.textContent = pad(index + 1);
-      if (caption) caption.textContent = steps[index].dataset.caption || '';
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) activate(steps.indexOf(entry.target));
-        });
-      },
-      // در موبایل (کمتر از 768px) حالت sticky با CSS خاموش است و این کلاس‌ها اثری ندارند
-      { rootMargin: '-45% 0px -45% 0px' }
-    );
-
-    steps.forEach((step) => observer.observe(step));
-  }
-
-  /* ------------------------------------------------------------------------
-     اسلایدر نظرات مشتریان (scroll-snap + دکمه‌های قبلی/بعدی + کیبورد)
-     کلیدها وقتی فوکوس روی اسلایدر است: چپ/راست = نظر بعدی/قبلی، Home و End = ابتدا و انتها
-     ------------------------------------------------------------------------ */
-  function initSlider() {
-    document.querySelectorAll('[data-slider]').forEach((slider) => {
-      const track = slider.querySelector('[data-slider-track]');
-      if (!track) return;
-
-      const scope = slider.closest('section') || document;
-      const prev = scope.querySelector('[data-slider-prev]');
-      const next = scope.querySelector('[data-slider-next]');
-      const progress = slider.querySelector('[data-slider-progress]');
-      const status = slider.querySelector('[data-slider-status]');
-      const slides = Array.from(track.children);
-      const isRTL = getComputedStyle(track).direction === 'rtl';
-      const dir = isRTL ? -1 : 1; // در راست‌چین، جلو رفتن یعنی اسکرول به چپ
-      const behavior = () => (prefersReducedMotion() ? 'auto' : 'smooth');
-
-      const step = () => {
-        const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
-        return slides[0].getBoundingClientRect().width + gap;
-      };
-      const maxScroll = () => track.scrollWidth - track.clientWidth;
-      const position = () => Math.abs(track.scrollLeft);
-      const currentIndex = () => Math.round(position() / step());
-
-      const update = () => {
-        const max = maxScroll();
-        if (prev) prev.disabled = position() <= 2;
-        if (next) next.disabled = position() >= max - 2;
-        if (progress) {
-          const visible = track.clientWidth / track.scrollWidth;
-          const ratio = max > 0 ? position() / max : 1;
-          progress.style.setProperty('--progress', (visible + (1 - visible) * ratio).toFixed(3));
-        }
-      };
-
-      const go = (delta) => {
-        const index = Math.min(slides.length - 1, Math.max(0, currentIndex() + delta));
-        track.scrollBy({ left: dir * delta * step(), behavior: behavior() });
-        if (status) status.textContent = `نظر ${toFa(index + 1)} از ${toFa(slides.length)}`;
-      };
-
-      if (prev) prev.addEventListener('click', () => go(-1));
-      if (next) next.addEventListener('click', () => go(1));
-
-      track.addEventListener('keydown', (event) => {
-        const keys = { ArrowLeft: isRTL ? 1 : -1, ArrowRight: isRTL ? -1 : 1 };
-        if (event.key in keys) {
-          event.preventDefault();
-          go(keys[event.key]);
-        } else if (event.key === 'Home') {
-          event.preventDefault();
-          track.scrollTo({ left: 0, behavior: behavior() });
-        } else if (event.key === 'End') {
-          event.preventDefault();
-          track.scrollTo({ left: dir * maxScroll(), behavior: behavior() });
-        }
-      });
-
-      let frame = null;
-      track.addEventListener(
-        'scroll',
-        () => {
-          cancelAnimationFrame(frame);
-          frame = requestAnimationFrame(update);
-        },
-        { passive: true }
-      );
-      window.addEventListener('resize', update, { passive: true });
-      update();
-    });
-  }
-
-  /* ------------------------------------------------------------------------
-     آکاردئون سوالات متداول (قابل دسترس)
-     هر سوال یک دکمه با aria-expanded است. کلیدهای بالا/پایین، Home و End
-     بین سوال‌ها جابه‌جا می‌شوند؛ Enter و Space باز و بسته می‌کنند.
-     ------------------------------------------------------------------------ */
-  function initAccordion() {
-    document.querySelectorAll('[data-accordion]').forEach((accordion) => {
-      const triggers = Array.from(accordion.querySelectorAll('[data-accordion-trigger]'));
-
-      const setOpen = (trigger, open) => {
-        trigger.setAttribute('aria-expanded', String(open));
-        const item = trigger.closest('.faq-item');
-        if (item) item.classList.toggle('is-open', open);
-      };
-
-      triggers.forEach((trigger, i) => {
-        trigger.addEventListener('click', () => {
-          setOpen(trigger, trigger.getAttribute('aria-expanded') !== 'true');
-        });
-
-        trigger.addEventListener('keydown', (event) => {
-          const last = triggers.length - 1;
-          const targets = {
-            ArrowDown: triggers[i === last ? 0 : i + 1],
-            ArrowUp: triggers[i === 0 ? last : i - 1],
-            Home: triggers[0],
-            End: triggers[last],
-          };
-          if (targets[event.key]) {
-            event.preventDefault();
-            targets[event.key].focus();
-          }
-        });
-      });
-    });
-  }
-
-  /* ------------------------------------------------------------------------
-     فرم خبرنامه (فقط اعتبارسنجی سمت کاربر)
-     برای ثبت واقعی ایمیل‌ها، در محل مشخص‌شده درخواست را به سرویس خبرنامه‌ی خود بفرستید.
-     ------------------------------------------------------------------------ */
-  const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-  const hasRealAction = (form) => {
-    const action = (form.getAttribute('action') || '').trim();
-    return action !== '' && action !== '#';
-  };
-
-  function initNewsletter() {
-    document.querySelectorAll('[data-newsletter]').forEach((form) => {
-      const input = form.querySelector('input[type="email"]');
-      const error = form.querySelector('[data-newsletter-error]');
-      const success = form.parentElement.querySelector('[data-newsletter-success]');
-      if (!input || !error) return;
-
-      const showError = (message) => {
-        input.setAttribute('aria-invalid', 'true');
-        error.textContent = message;
-        error.hidden = false;
-        input.focus();
-      };
-
-      const clearError = () => {
-        input.removeAttribute('aria-invalid');
-        error.hidden = true;
-      };
-
-      input.addEventListener('input', () => {
-        if (input.getAttribute('aria-invalid') === 'true' && EMAIL_PATTERN.test(input.value.trim())) clearError();
-      });
-
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const value = input.value.trim();
-        if (!value) return showError('لطفاً ایمیل خود را وارد کنید.');
-        if (!EMAIL_PATTERN.test(value)) return showError('ایمیل واردشده معتبر نیست؛ مثال درست: name@example.com');
-        clearError();
-
-        // اتصال به سرویس خبرنامه: اگر action فرم به آدرس واقعی تنظیم شده باشد، ایمیل به همان آدرس ارسال می‌شود.
-        if (hasRealAction(form)) {
-          form.submit();
-          return;
-        }
-
-        form.hidden = true;
-        if (success) {
-          success.hidden = false;
-          success.focus();
-        }
-      });
-    });
-
-    // کپی کد تخفیف
-    document.querySelectorAll('[data-copy-coupon]').forEach((button) => {
-      const label = button.textContent;
-      button.addEventListener('click', async () => {
-        const code = button.parentElement.querySelector('[data-coupon]');
-        if (!code) return;
-        let copied = false;
-        try {
-          await navigator.clipboard.writeText(code.textContent.trim());
-          copied = true;
-        } catch (e) {
-          // اگر دسترسی به کلیپ‌بورد نبود، متن کد انتخاب می‌شود تا کاربر خودش کپی کند
-          const range = document.createRange();
-          range.selectNodeContents(code);
-          const selection = window.getSelection();
-          selection.removeAllRanges();
-          selection.addRange(range);
-        }
-        button.textContent = copied ? 'کپی شد' : 'کد انتخاب شد';
-        setTimeout(() => {
-          button.textContent = label;
-        }, 2000);
-      });
-    });
-  }
-
-  /* ------------------------------------------------------------------------
-     اعتبارسنجی فرم‌ها (فرم تماس) – فقط سمت کاربر
-     هر فرم با ویژگی data-validate بررسی می‌شود. قوانین از خود فیلدها خوانده می‌شوند:
-       required   → الزامی        type="email" → ایمیل معتبر
-       data-min   → حداقل طول    data-phone   → موبایل ایرانی (۰۹xxxxxxxxx)
-     برای ارسال واقعی، فرم را به اسکریپت سمت سرور وصل کنید (Help.pdf را ببینید).
-     ------------------------------------------------------------------------ */
-  const FIELD_LABELS = {};
-
-  function validateField(field) {
-    const value = field.type === 'checkbox' ? field.checked : field.value.trim();
-    const label = FIELD_LABELS[field.id] || 'این فیلد';
-
-    if (field.required && (field.type === 'checkbox' ? !value : value === '')) {
-      return field.type === 'checkbox'
-        ? 'برای ارسال پیام، موافقت با شرایط حریم خصوصی لازم است.'
-        : field.tagName === 'SELECT'
-          ? `لطفاً ${label} را انتخاب کنید.`
-          : `لطفاً ${label} را وارد کنید.`;
+    cartFoot.hidden = false;
+    cartBody.innerHTML = cart.map(function (i) {
+      return '<div class="cart-item" data-id="' + esc(i.id) + '">' +
+        '<img src="' + esc(i.img) + '" alt="" width="72" height="72" loading="lazy">' +
+        '<div><h4>' + esc(i.name) + '</h4><div class="price-now">' + money(i.price) + '</div>' +
+        '<div class="qty" role="group" aria-label="تعداد"><button type="button" data-q="+1" aria-label="افزایش">' + icon('plus') + '</button>' +
+        '<input type="number" min="1" max="99" value="' + i.qty + '" aria-label="تعداد" inputmode="numeric">' +
+        '<button type="button" data-q="-1" aria-label="کاهش">' + icon('minus') + '</button></div></div>' +
+        '<button type="button" class="cart-remove" aria-label="حذف از سبد">' + icon('trash') + '</button></div>';
+    }).join('');
+    var total = cartTotal();
+    var ship = FREE_SHIP && total >= FREE_SHIP ? 0 : SHIP_COST;
+    $('[data-sum="sub"]').innerHTML = money(total);
+    $('[data-sum="ship"]').innerHTML = ship ? money(ship) : 'رایگان';
+    $('[data-sum="total"]').innerHTML = money(total + ship);
+    var fs = $('[data-free-ship-msg]');
+    if (fs && FREE_SHIP) {
+      var left = FREE_SHIP - total;
+      fs.innerHTML = (left > 0 ? fa(left) + ' تومان تا ارسال رایگان مانده است' : 'ارسال سفارش شما رایگان است') +
+        '<div class="sold-bar"><span style="--p:' + Math.min(100, total / FREE_SHIP * 100) + '%"></span></div>';
     }
-    if (value === '' || value === false) return '';
-
-    if (field.type === 'email' && !EMAIL_PATTERN.test(value)) {
-      return 'ایمیل معتبر نیست؛ مثال درست: name@example.com';
-    }
-    if (field.hasAttribute('data-phone') && !/^09\d{9}$/.test(toEn(value).replace(/[\s-]/g, ''))) {
-      return 'شماره‌ی موبایل باید ۱۱ رقم باشد و با ۰۹ شروع شود.';
-    }
-    const min = parseInt(field.dataset.min || '0', 10);
-    if (min && value.length < min) {
-      return `${label} باید دست‌کم ${toFa(min)} حرف باشد.`;
-    }
-    return '';
   }
-
-  function initFormValidation() {
-    document.querySelectorAll('form[data-validate]').forEach((form) => {
-      const fields = Array.from(form.querySelectorAll('input, select, textarea')).filter((f) => f.id);
-      const summary = form.querySelector('[data-form-summary]');
-      const success = form.parentElement.querySelector('[data-form-success]');
-
-      fields.forEach((field) => {
-        const labelEl = form.querySelector(`label[for="${field.id}"]`);
-        if (labelEl) FIELD_LABELS[field.id] = labelEl.textContent.replace('*', '').trim();
-      });
-
-      const show = (field, message) => {
-        const error = document.getElementById(`${field.id}-error`);
-        if (message) field.setAttribute('aria-invalid', 'true');
-        else field.removeAttribute('aria-invalid');
-        if (error) {
-          error.textContent = message;
-          error.hidden = !message;
-        }
-      };
-
-      fields.forEach((field) => {
-        // بعد از ترک فیلد بررسی می‌شود؛ هنگام تایپ فقط اگر قبلاً خطا داشته
-        field.addEventListener('blur', () => {
-          if (field.value !== '' || field.getAttribute('aria-invalid') === 'true') show(field, validateField(field));
-        });
-        field.addEventListener(field.type === 'checkbox' || field.tagName === 'SELECT' ? 'change' : 'input', () => {
-          if (field.getAttribute('aria-invalid') === 'true') show(field, validateField(field));
-        });
-      });
-
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const invalid = fields.filter((field) => {
-          const message = validateField(field);
-          show(field, message);
-          return Boolean(message);
-        });
-
-        if (invalid.length) {
-          if (summary) {
-            summary.textContent = `لطفاً ${toFa(invalid.length)} مورد مشخص‌شده را اصلاح کنید.`;
-            summary.hidden = false;
-          }
-          invalid[0].focus();
-          return;
-        }
-
-        if (summary) summary.hidden = true;
-
-        // اتصال به سرور: اگر action فرم به یک آدرس واقعی (مثلاً contact.php) تنظیم شده باشد،
-        // فرم بعد از اعتبارسنجی به همان آدرس ارسال می‌شود. با action="#" فقط پیام موفقیت نمایش داده می‌شود.
-        if (hasRealAction(form)) {
-          form.submit();
-          return;
-        }
-        form.hidden = true;
-        if (success) {
-          success.hidden = false;
-          success.focus();
-        }
-      });
+  if (cartBody) {
+    cartBody.addEventListener('click', function (e) {
+      var row = e.target.closest('.cart-item'); if (!row) return;
+      var item = cart.find(function (i) { return i.id === row.dataset.id; }); if (!item) return;
+      var qb = e.target.closest('[data-q]');
+      if (qb) { item.qty = Math.max(1, Math.min(99, item.qty + (+qb.dataset.q))); saveCart(); }
+      if (e.target.closest('.cart-remove')) { cart = cart.filter(function (i) { return i !== item; }); saveCart(); toast('از سبد خرید حذف شد', 'trash'); }
+    });
+    cartBody.addEventListener('change', function (e) {
+      if (!e.target.matches('input')) return;
+      var row = e.target.closest('.cart-item');
+      var item = cart.find(function (i) { return i.id === row.dataset.id; });
+      item.qty = Math.max(1, Math.min(99, parseInt(e.target.value, 10) || 1)); saveCart();
     });
   }
 
-  /* ------------------------------------------------------------------------
-     قیمت‌ها و جداکننده‌ی هزارگان فارسی (٬)
-     قیمت‌ها را در HTML با جداکننده‌ی فارسی بنویسید (مثل ۱٬۲۹۵٬۰۰۰).
-     چون فونت وزیرمتن این علامت را شبیه کامای انگلیسی رسم می‌کند، اینجا هر ٬ داخل
-     قیمت‌ها در یک span.num-sep (داخل span.num) قرار می‌گیرد تا با CSS به شکل درست فارسی دیده شود.
-     برای ساختن قیمت با JS از ShabeChelleh.formatPrice(1295000) استفاده کنید.
-     ------------------------------------------------------------------------ */
-  const formatPrice = (value) => new Intl.NumberFormat('fa-IR').format(value);
+  /* مراحل سبد: اقلام ← فرم ← تأیید */
+  function showStep(step) {
+    $$('[data-step]').forEach(function (s) { s.hidden = s.dataset.step !== step; });
+    if (cartFoot && step !== 'items') cartFoot.hidden = true;
+    var title = $('#cart-title');
+    if (title) title.textContent = { items: 'سبد خرید', form: 'اطلاعات ارسال', done: 'سفارش ثبت شد' }[step];
+  }
+  $$('[data-go-step]').forEach(function (b) {
+    b.addEventListener('click', function () { showStep(b.dataset.goStep); var f = $('[data-step="' + b.dataset.goStep + '"] input'); if (f) f.focus(); });
+  });
 
-  function initNumberSeparators(scope) {
-    const SEP = '\u066C';
-    const targets = (scope || document).querySelectorAll('.price-now, .product-price del, .feature-price, [data-price]');
+  var checkout = $('#checkout-form');
+  if (checkout) {
+    var rules = {
+      name: function (v) { return v.trim().length >= 3 || 'نام و نام خانوادگی را کامل بنویسید.'; },
+      phone: function (v) { var n = v.replace(/[۰-۹]/g, function (d) { return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d); }).replace(/\D/g, ''); return /^09\d{9}$/.test(n) || 'شماره‌ی موبایل باید ۱۱ رقم و با ۰۹ شروع شود.'; },
+      address: function (v) { return v.trim().length >= 10 || 'آدرس را کامل‌تر بنویسید.'; }
+    };
+    checkout.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var ok = true;
+      Object.keys(rules).forEach(function (k) {
+        var input = checkout.elements[k]; if (!input) return;
+        var res = rules[k](input.value);
+        var field = input.closest('.field');
+        field.classList.toggle('has-error', res !== true);
+        if (res !== true) { $('.field-error', field).textContent = res; if (ok) input.focus(); ok = false; }
+      });
+      if (!ok) return;
+      /* در نسخه‌ی واقعی، این‌جا اطلاعات را به درگاه پرداخت یا سرور خود بفرستید. */
+      var code = 'JS-' + Math.floor(100000 + Math.random() * 899999);
+      $('[data-order-code]').textContent = code;
+      $('[data-order-name]').textContent = checkout.elements.name.value.trim();
+      cart = []; store.set(KEY_CART, cart);
+      checkout.reset();
+      renderCart();
+      showStep('done');
+    });
+    $$('input, textarea', checkout).forEach(function (i) {
+      i.addEventListener('input', function () { i.closest('.field').classList.remove('has-error'); });
+    });
+  }
 
-    targets.forEach((el) => {
-      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
-      const nodes = [];
-      while (walker.nextNode()) {
-        if (walker.currentNode.nodeValue.includes(SEP) && !walker.currentNode.parentNode.classList.contains('num-sep')) {
-          nodes.push(walker.currentNode);
-        }
+  /* ---------- دکمه‌های افزودن به سبد ---------- */
+  document.addEventListener('click', function (e) {
+    var add = e.target.closest('[data-add]');
+    if (add) {
+      e.preventDefault();
+      var src = add.closest('[data-product]') || document.querySelector('[data-product][data-id="' + add.dataset.add + '"]');
+      if (!src) return;
+      var qtyInput = add.dataset.qty ? document.getElementById(add.dataset.qty) : null;
+      addToCart(readProduct(src), qtyInput ? Math.max(1, parseInt(qtyInput.value, 10) || 1) : 1);
+      if (add.closest('.modal')) closeLayer(add.closest('.modal'));
+    }
+    var buy = e.target.closest('[data-buy-now]');
+    if (buy) {
+      e.preventDefault();
+      var s2 = buy.closest('[data-product]');
+      if (s2) { addToCart(readProduct(s2), 1); openLayer($('#cart')); }
+    }
+  });
+
+  /* ---------- تعداد در محصول ویژه ---------- */
+  $$('.qty[data-standalone]').forEach(function (q) {
+    var input = $('input', q);
+    $$('[data-q]', q).forEach(function (b) {
+      b.addEventListener('click', function () { input.value = Math.max(1, Math.min(99, (parseInt(input.value, 10) || 1) + (+b.dataset.q))); });
+    });
+  });
+
+  /* ---------- علاقه‌مندی ---------- */
+  var wish = store.get(KEY_WISH, []);
+  var wishCounts = $$('[data-wish-count]');
+  function renderWish() {
+    $$('[data-wish]').forEach(function (b) {
+      var on = wish.indexOf(b.dataset.wish) > -1;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-pressed', on);
+    });
+    wishCounts.forEach(function (c) { c.textContent = wish.length ? fa(wish.length) : ''; if (wish.length) c.removeAttribute('data-zero'); else c.setAttribute('data-zero', ''); });
+  }
+  document.addEventListener('click', function (e) {
+    var w = e.target.closest('[data-wish]'); if (!w) return;
+    var id = w.dataset.wish, i = wish.indexOf(id);
+    if (i > -1) { wish.splice(i, 1); toast('از علاقه‌مندی‌ها حذف شد', 'heart'); }
+    else { wish.push(id); toast('به علاقه‌مندی‌ها اضافه شد', 'heart'); }
+    store.set(KEY_WISH, wish); renderWish();
+  });
+  var wishBtn = $('[data-wish-open]');
+  if (wishBtn) wishBtn.addEventListener('click', function () {
+    if (!wish.length) { toast('هنوز محصولی را به علاقه‌مندی‌ها اضافه نکرده‌اید', 'heart'); return; }
+    var tabs = $$('.filter-tab');
+    tabs.forEach(function (t) { t.setAttribute('aria-pressed', 'false'); });
+    $$('.products .card').forEach(function (c) { c.classList.toggle('is-hidden', wish.indexOf(c.dataset.id) === -1); });
+    var more = $('[data-more]'); if (more) more.hidden = true;
+    document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+    toast('محصولات مورد علاقه‌ی شما نمایش داده شد', 'heart');
+  });
+
+  /* ---------- پیش‌نمایش سریع محصول ---------- */
+  var qv = $('#quickview');
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-quick]'); if (!b || !qv) return;
+    e.preventDefault();
+    var card = b.closest('[data-product]'); if (!card) return;
+    var p = readProduct(card);
+    var off = p.old ? Math.round((1 - p.price / p.old) * 100) : 0;
+    $('.qv-media img', qv).src = p.img;
+    $('.qv-media img', qv).alt = p.name;
+    $('[data-qv="cat"]', qv).textContent = p.cat;
+    $('[data-qv="name"]', qv).textContent = p.name;
+    $('[data-qv="desc"]', qv).textContent = p.desc;
+    $('[data-qv="rating"]', qv).innerHTML = '<span class="stars"><i style="--w:' + (p.rating / 5 * 100) + '%"></i></span> ' + fa(p.rating) + ' از ' + fa(p.reviews) + ' نظر';
+    $('[data-qv="price"]', qv).innerHTML = '<span class="price-now">' + money(p.price) + '</span>' + (p.old ? '<span class="price-old">' + fa(p.old) + '</span><span class="chip">' + fa(off) + '٪ تخفیف</span>' : '');
+    var holder = $('[data-qv="holder"]', qv);
+    ['id', 'name', 'price', 'old', 'img', 'desc', 'catName', 'rating', 'reviews'].forEach(function (k) { holder.dataset[k] = card.dataset[k] || ''; });
+    $('[data-qv="wish"]', qv).dataset.wish = p.id;
+    renderWish();
+    openLayer(qv);
+  });
+
+  /* ---------- فیلتر دسته‌ها ---------- */
+  var tabs = $$('.filter-tab');
+  var cards = $$('.products .card');
+  var moreBtn = $('[data-more]');
+  var LIMIT = 8;
+  var expanded = false;
+  function applyFilter(cat) {
+    tabs.forEach(function (t) { t.setAttribute('aria-pressed', t.dataset.filter === cat ? 'true' : 'false'); });
+    var shown = 0;
+    cards.forEach(function (c) {
+      var match = cat === 'all' || c.dataset.cat === cat;
+      var visible = match && (expanded || cat !== 'all' || shown < LIMIT);
+      if (match) shown++;
+      c.classList.toggle('is-hidden', !visible);
+    });
+    if (moreBtn) moreBtn.hidden = expanded || cat !== 'all' || cards.length <= LIMIT;
+  }
+  tabs.forEach(function (t) { t.addEventListener('click', function () { applyFilter(t.dataset.filter); }); });
+  if (moreBtn) moreBtn.addEventListener('click', function () { expanded = true; applyFilter('all'); });
+  if (tabs.length) applyFilter('all');
+  /* کلیک روی دسته‌بندی‌ها: فیلتر و رفتن به محصولات */
+  $$('[data-cat-link]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      expanded = true;
+      applyFilter(a.dataset.catLink);
+      document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  /* ---------- اسلایدر نظرات ---------- */
+  $$('.slider').forEach(function (sl) {
+    var track = $('.slider-track', sl);
+    var scope = sl.closest('section') || sl.parentNode;
+    var prev = $('[data-dir="prev"]', scope), next = $('[data-dir="next"]', scope);
+    var dotsWrap = $('.slider-dots', sl);
+    var items = track.children;
+    function step() { return items[0] ? items[0].getBoundingClientRect().width + parseFloat(getComputedStyle(track).columnGap || 20) : 300; }
+    /* در صفحه‌ی راست‌به‌چپ، scrollLeft منفی است */
+    function pos() { return Math.abs(track.scrollLeft); }
+    function update() {
+      var max = track.scrollWidth - track.clientWidth - 4;
+      if (prev) prev.disabled = pos() <= 4;
+      if (next) next.disabled = pos() >= max;
+      if (dotsWrap) {
+        var idx = Math.round(pos() / step());
+        $$('button', dotsWrap).forEach(function (d, i) { d.setAttribute('aria-current', i === idx ? 'true' : 'false'); });
       }
+    }
+    if (dotsWrap) {
+      dotsWrap.innerHTML = Array.prototype.map.call(items, function (_, i) { return '<button type="button" aria-label="نظر ' + fa(i + 1) + '"></button>'; }).join('');
+      $$('button', dotsWrap).forEach(function (d, i) { d.addEventListener('click', function () { track.scrollTo({ left: -i * step(), behavior: 'smooth' }); }); });
+    }
+    if (prev) prev.addEventListener('click', function () { track.scrollBy({ left: step(), behavior: 'smooth' }); });
+    if (next) next.addEventListener('click', function () { track.scrollBy({ left: -step(), behavior: 'smooth' }); });
+    track.addEventListener('scroll', function () { requestAnimationFrame(update); }, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  });
 
-      nodes.forEach((node) => {
-        // عدد در یک span.num چپ‌به‌راست و ایزوله قرار می‌گیرد تا ترتیب ارقام به‌هم نریزد
-        const fragment = document.createElement('span');
-        fragment.className = 'num';
-        node.nodeValue.split(SEP).forEach((part, i) => {
-          if (i > 0) {
-            const sep = document.createElement('span');
-            sep.className = 'num-sep';
-            sep.textContent = SEP;
-            fragment.appendChild(sep);
-          }
-          if (part) fragment.appendChild(document.createTextNode(part));
-        });
-        node.parentNode.replaceChild(fragment, node);
-      });
+  /* ---------- سوالات متداول ---------- */
+  $$('.faq-item').forEach(function (item) {
+    var q = $('.faq-q', item);
+    q.addEventListener('click', function () {
+      var open = item.classList.toggle('is-open');
+      q.setAttribute('aria-expanded', open);
     });
-  }
+  });
 
-  /* ------------------------------------------------------------------------
-     اجرا
-     ------------------------------------------------------------------------ */
-  initAnnouncementBar();
-  initHeader();
-  initMobileMenu();
-  initCountdown();
-  initParallax();
-  initReveal();
-  initWishlist();
-  initFeature();
-  initNumberSeparators();
-  initCart();
-  initSlider();
-  initAccordion();
-  initNewsletter();
-  initFormValidation();
+  /* ---------- خبرنامه ---------- */
+  $$('.news-form').forEach(function (f) {
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var input = $('input', f), msg = f.parentNode.querySelector('.news-msg');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(input.value.trim())) {
+        msg.textContent = 'لطفاً یک ایمیل معتبر وارد کنید.'; input.focus(); return;
+      }
+      msg.innerHTML = 'عضویت شما ثبت شد. کد تخفیف شما: <span class="coupon"><span>' + esc(f.dataset.code) + '</span><button type="button" data-copy="' + esc(f.dataset.code) + '">کپی</button></span>';
+      input.value = '';
+    });
+  });
+  document.addEventListener('click', function (e) {
+    var c = e.target.closest('[data-copy]'); if (!c) return;
+    var text = c.dataset.copy;
+    var done = function () { toast('کد تخفیف کپی شد', 'check'); };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, done);
+    else { var t = document.createElement('textarea'); t.value = text; body.appendChild(t); t.select(); try { document.execCommand('copy'); } catch (er) { /* */ } t.remove(); done(); }
+  });
 
-  // در دسترس قرار دادن ابزارها برای custom.js
-  window.ShabeChelleh = { toFa, toEn, formatPrice, initNumberSeparators, cartStore };
+  /* ---------- گالری (نمایش بزرگ عکس) ---------- */
+  var lb = $('#lightbox');
+  $$('[data-lightbox]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      if (!lb) return;
+      e.preventDefault();
+      var img = $('img', lb); img.src = a.getAttribute('href'); img.alt = $('img', a).alt;
+      openLayer(lb);
+    });
+  });
+
+  /* ---------- اجرای اولیه ---------- */
+  renderCart();
+  renderWish();
 })();

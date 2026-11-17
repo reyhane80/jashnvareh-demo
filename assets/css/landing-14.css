@@ -1,0 +1,39 @@
+/*!
+ * جشنواره — لندینگ ۱۴: دوره‌ی آموزشی آنلاین
+ * رنگ‌ها، فونت و جزئیات ظاهری اختصاصی این لندینگ.
+ * برای تغییر رنگ کافی است مقادیر زیر را عوض کنید.
+ */
+:root{
+  --bg:#f4f4ff;
+  --surface:#ffffff;
+  --surface2:#e7e7fb;
+  --text:#16134a;
+  --muted:#5c5a8a;
+  --primary:#4f46e5;
+  --primary-ink:#ffffff;
+  --accent:#fbbf24;
+  --line:rgba(79,70,229,.14);
+  --radius:16px;
+  --radius-sm:min(16px,12px);
+  --btn-radius:calc(16px * .6);
+  --font-display:'Noto Kufi Arabic','Vazirmatn',sans-serif;
+  --footer-bg:color-mix(in srgb,var(--text) 92%,#000);
+  --footer-ink:#ece8e4;
+  --pattern-on-primary:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><circle cx='3' cy='3' r='1.6' fill='%23ffffff'/></svg>");
+}
+.section--pattern{background-color:var(--surface)}
+.section--pattern::before{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><circle cx='3' cy='3' r='1.6' fill='%234f46e5'/></svg>");opacity:0.12;-webkit-mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);pointer-events:none}
+.section--pattern>.container{position:relative}
+.section-title{font-weight:800}
+.hero-title{font-weight:800;font-size:clamp(2.2rem,5.2vw,3.8rem)}
+.card--course .card-media{background:var(--surface2)}
+.card--course .badge{background:var(--accent);color:#16134a}
+.feature{background:#fff;border:0;box-shadow:0 20px 40px -32px rgba(79,70,229,.6)}
+.feature-icon{border-radius:14px}
+.news{background:linear-gradient(135deg,#312e81,var(--primary))}
+.bundle--hot{background:linear-gradient(180deg,#eef0ff,#fff)}
+.cats--pills{grid-template-columns:repeat(4,1fr)}
+.cats--pills .cat{border-radius:var(--radius);padding:10px 10px 10px 16px}
+.cats--pills .cat-media{border-radius:12px}
+@media (max-width:1100px){.cats--pills{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.cats--pills{grid-template-columns:1fr}}

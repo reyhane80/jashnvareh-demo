@@ -1,0 +1,36 @@
+/*!
+ * جشنواره — لندینگ ۰۶: روز مادر: عطر و جواهرات
+ * رنگ‌ها، فونت و جزئیات ظاهری اختصاصی این لندینگ.
+ * برای تغییر رنگ کافی است مقادیر زیر را عوض کنید.
+ */
+:root{
+  --bg:#f7f3fb;
+  --surface:#ffffff;
+  --surface2:#ece4f5;
+  --text:#2f2340;
+  --muted:#7a6c8c;
+  --primary:#7b5ea7;
+  --primary-ink:#ffffff;
+  --accent:#c48b72;
+  --line:rgba(123,94,167,.18);
+  --radius:18px;
+  --radius-sm:min(18px,12px);
+  --btn-radius:calc(18px * .6);
+  --font-display:'Amiri','Vazirmatn',sans-serif;
+  --footer-bg:color-mix(in srgb,var(--text) 92%,#000);
+  --footer-ink:#ece8e4;
+  --pattern-on-primary:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><circle cx='3' cy='3' r='1.6' fill='%23ffffff'/></svg>");
+}
+.section--pattern{background-color:var(--surface)}
+.section--pattern::before{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><circle cx='3' cy='3' r='1.6' fill='%237b5ea7'/></svg>");opacity:0.12;-webkit-mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);pointer-events:none}
+.section--pattern>.container{position:relative}
+.hero-title,.section-title,.featured-body h2,.about-body h2,.faq-aside h2,.bundle h3,.banner h3{font-weight:600}
+.hero-title{font-size:clamp(2.6rem,6.4vw,4.8rem);line-height:1.1}
+.section-title{font-size:clamp(2rem,4.2vw,3rem)}
+.reviews--quote .review p{font-size:clamp(1.5rem,3vw,2.3rem);font-weight:500}
+.hero--circle{background:linear-gradient(180deg,#efe6f8,var(--bg))}
+.card--frame .card-media{background:#fff}
+.news{background:linear-gradient(135deg,var(--primary),#a77fc4)}
+.feature{background:#fff;text-align:center;flex-direction:column;align-items:center}
+.feature-icon{border-radius:50%}
+.stat b{font-family:var(--font-display);font-weight:700}

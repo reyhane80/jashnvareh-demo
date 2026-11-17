@@ -1,0 +1,38 @@
+/*!
+ * جشنواره — لندینگ ۰۴: نوروز: سفره‌ی هفت‌سین
+ * رنگ‌ها، فونت و جزئیات ظاهری اختصاصی این لندینگ.
+ * برای تغییر رنگ کافی است مقادیر زیر را عوض کنید.
+ */
+:root{
+  --bg:#f3f8ee;
+  --surface:#ffffff;
+  --surface2:#e6f0dd;
+  --text:#1f3527;
+  --muted:#5f7465;
+  --primary:#2f7d4f;
+  --primary-ink:#ffffff;
+  --accent:#d6658c;
+  --line:rgba(31,53,39,.12);
+  --radius:28px;
+  --radius-sm:min(28px,12px);
+  --btn-radius:calc(28px * .6);
+  --font-display:'El Messiri','Vazirmatn',sans-serif;
+  --footer-bg:color-mix(in srgb,var(--text) 92%,#000);
+  --footer-ink:#ece8e4;
+  --pattern-on-primary:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='70' height='70'><g fill='%23ffffff'><circle cx='18' cy='14' r='3'/><circle cx='22' cy='18' r='3'/><circle cx='18' cy='22' r='3'/><circle cx='14' cy='18' r='3'/><circle cx='52' cy='50' r='2'/><circle cx='55' cy='53' r='2'/><circle cx='52' cy='56' r='2'/><circle cx='49' cy='53' r='2'/></g></svg>");
+}
+.section--pattern{background-color:var(--surface)}
+.section--pattern::before{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='70' height='70'><g fill='%232f7d4f'><circle cx='18' cy='14' r='3'/><circle cx='22' cy='18' r='3'/><circle cx='18' cy='22' r='3'/><circle cx='14' cy='18' r='3'/><circle cx='52' cy='50' r='2'/><circle cx='55' cy='53' r='2'/><circle cx='52' cy='56' r='2'/><circle cx='49' cy='53' r='2'/></g></svg>");opacity:0.12;-webkit-mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);pointer-events:none}
+.section--pattern>.container{position:relative}
+.hero--collage{background:linear-gradient(180deg,#e5f1da,var(--bg))}
+.hero-title{font-weight:700}
+.section-title{font-weight:700}
+.card--soft .card-media{background:#fff}
+.cats--pills{grid-template-columns:repeat(4,1fr)}
+.cats--pills .cat{padding:8px 8px 8px 18px}
+.banner{border-radius:40px}
+.news{background:linear-gradient(135deg,var(--primary),#1e5c39)}
+.feature{background:#fff;border:0;box-shadow:0 8px 30px -22px rgba(31,53,39,.5)}
+.feature-icon{border-radius:50%;background:#fbe7ee;color:var(--accent)}
+@media (max-width:1100px){.cats--pills{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.cats--pills{grid-template-columns:1fr}}

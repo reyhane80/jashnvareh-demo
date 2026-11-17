@@ -1,0 +1,39 @@
+/*!
+ * جشنواره — لندینگ ۱۲: قهوه‌ی تخصصی
+ * رنگ‌ها، فونت و جزئیات ظاهری اختصاصی این لندینگ.
+ * برای تغییر رنگ کافی است مقادیر زیر را عوض کنید.
+ */
+:root{
+  --bg:#f3ebe1;
+  --surface:#fbf7f1;
+  --surface2:#e8dccd;
+  --text:#2e1c10;
+  --muted:#7d6553;
+  --primary:#3c2415;
+  --primary-ink:#f3ebe1;
+  --accent:#c07a3a;
+  --line:rgba(46,28,16,.15);
+  --radius:10px;
+  --radius-sm:min(10px,12px);
+  --btn-radius:calc(10px * .6);
+  --font-display:'Amiri','Vazirmatn',sans-serif;
+  --footer-bg:color-mix(in srgb,var(--text) 92%,#000);
+  --footer-ink:#ece8e4;
+  --pattern-on-primary:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='70' height='70'><g fill='%23ffffff'><ellipse cx='16' cy='18' rx='6' ry='8.5' transform='rotate(-30 16 18)'/><ellipse cx='50' cy='50' rx='5' ry='7' transform='rotate(35 50 50)'/></g><g stroke='%23ffffff' stroke-opacity='.35' stroke-width='1.2' fill='none'><path d='M12 12q6 6 8 13' /><path d='M47 44q5 5 6 12'/></g></svg>");
+}
+.section--pattern{background-color:var(--surface)}
+.section--pattern::before{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='70' height='70'><g fill='%233c2415'><ellipse cx='16' cy='18' rx='6' ry='8.5' transform='rotate(-30 16 18)'/><ellipse cx='50' cy='50' rx='5' ry='7' transform='rotate(35 50 50)'/></g><g stroke='%23ffffff' stroke-opacity='.35' stroke-width='1.2' fill='none'><path d='M12 12q6 6 8 13' /><path d='M47 44q5 5 6 12'/></g></svg>");opacity:0.12;-webkit-mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);pointer-events:none}
+.section--pattern>.container{position:relative}
+.hero-title{font-weight:600}
+.section-title,.featured-body h2,.about-body h2,.faq-aside h2,.bundle h3,.banner h3,.news h2{font-weight:600}
+.reviews--quote .review p{font-size:clamp(1.6rem,3.2vw,2.4rem);font-weight:500}
+.card--menu{border-radius:10px}
+.card--menu .card-media{background:#fff}
+.feature{background:transparent;border:0;border-radius:0;padding:0;flex-direction:column}
+.feature-icon{background:var(--primary);color:var(--primary-ink);border-radius:50%}
+.section--features{border-block:1px solid var(--line);padding-block:48px}
+.news{background:var(--primary)}
+.news .news-form .btn{color:var(--primary)}
+.cats--banner{border-radius:10px;overflow:hidden;background:var(--surface)}
+.price-now{color:var(--primary)}
+.hero--overlap{background:radial-gradient(60% 60% at 80% 40%,#ead9c4,transparent 70%)}
