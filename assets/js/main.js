@@ -1,5 +1,5 @@
 /*!
- * جشنواره — مجموعه‌ی ۱۵ لندینگ فروش ویژه | نسخه‌ی 1.0.0
+ * جشنواره — مجموعه‌ی ۱۵ لندینگ فروش ویژه | نسخه‌ی 1.1.0
  * اسکریپت مشترک همه‌ی لندینگ‌ها (جاوااسکریپت خالص، بدون کتابخانه).
  *
  * تنظیمات هر صفحه از ویژگی‌های data روی تگ <body> خوانده می‌شود:
@@ -124,7 +124,9 @@
    */
   $$('.countdown').forEach(function (cd) {
     var end;
-    if (cd.dataset.deadline) {
+    if (cd.hasAttribute('data-daily')) {
+      var mid = new Date(); mid.setHours(24, 0, 0, 0); end = mid.getTime();
+    } else if (cd.dataset.deadline) {
       end = new Date(cd.dataset.deadline).getTime();
     } else {
       var k = 'jashn_cd_' + STORE;
@@ -141,7 +143,10 @@
       if (parts.h) parts.h.textContent = pad(h);
       if (parts.m) parts.m.textContent = pad(m);
       if (parts.s) parts.s.textContent = pad(s);
-      if (!diff) { cd.classList.add('is-ended'); clearInterval(timer); }
+      if (!diff) {
+        if (cd.hasAttribute('data-daily')) { var m2 = new Date(); m2.setHours(24, 0, 0, 0); end = m2.getTime(); return; }
+        cd.classList.add('is-ended'); clearInterval(timer);
+      }
     }
     var timer = setInterval(tick, 1000);
     tick();
@@ -181,7 +186,7 @@
     if (!cartBody) return;
     showStep('items');
     if (!cart.length) {
-      cartBody.innerHTML = '<div class="cart-empty">' + icon('bag') + '<p>سبد خرید شما خالی است.</p><button type="button" class="btn btn--primary btn--sm" data-cart-shop style="margin-top:16px">مشاهده‌ی محصولات</button></div>';
+      cartBody.innerHTML = '<div class="empty-state"><span class="es-icon">' + icon('bag') + '</span><h3>سبد خرید شما خالی است</h3><p>محصولات پیشنهادی جشنواره را ببینید و به سبد اضافه کنید.</p><button type="button" class="btn btn--primary btn--sm" data-cart-shop>مشاهده‌ی محصولات</button></div>';
       cartFoot.hidden = true;
       var shop = $('[data-cart-shop]', cartBody);
       if (shop) shop.addEventListener('click', function () { closeLayer($('#cart')); location.hash = '#products'; });
@@ -279,6 +284,15 @@
       addToCart(readProduct(src), qtyInput ? Math.max(1, parseInt(qtyInput.value, 10) || 1) : 1);
       if (add.closest('.modal')) closeLayer(add.closest('.modal'));
     }
+    var all = e.target.closest('[data-add-all]');
+    if (all) {
+      var box = all.closest('section');
+      $$('[data-product]', box).forEach(function (el) {
+        var p = readProduct(el), ex = cart.find(function (i) { return i.id === p.id; });
+        if (ex) ex.qty = Math.min(99, ex.qty + 1); else cart.push({ id: p.id, name: p.name, price: p.price, img: p.img, qty: 1 });
+      });
+      saveCart(); toast('همه‌ی محصولات این ست به سبد اضافه شد', 'check'); openLayer($('#cart'));
+    }
     var buy = e.target.closest('[data-buy-now]');
     if (buy) {
       e.preventDefault();
@@ -311,25 +325,36 @@
     var id = w.dataset.wish, i = wish.indexOf(id);
     if (i > -1) { wish.splice(i, 1); toast('از علاقه‌مندی‌ها حذف شد', 'heart'); }
     else { wish.push(id); toast('به علاقه‌مندی‌ها اضافه شد', 'heart'); }
-    store.set(KEY_WISH, wish); renderWish();
+    store.set(KEY_WISH, wish); renderWish(); renderWishList();
   });
-  var wishBtn = $('[data-wish-open]');
-  if (wishBtn) wishBtn.addEventListener('click', function () {
-    if (!wish.length) { toast('هنوز محصولی را به علاقه‌مندی‌ها اضافه نکرده‌اید', 'heart'); return; }
-    var tabs = $$('.filter-tab');
-    tabs.forEach(function (t) { t.setAttribute('aria-pressed', 'false'); });
-    $$('.products .card').forEach(function (c) { c.classList.toggle('is-hidden', wish.indexOf(c.dataset.id) === -1); });
-    var more = $('[data-more]'); if (more) more.hidden = true;
+  var wishBody = $('#wish-items');
+  function renderWishList() {
+    if (!wishBody) return;
+    var items = wish.map(findProduct).filter(Boolean);
+    if (!items.length) {
+      wishBody.innerHTML = '<div class="empty-state"><span class="es-icon">' + icon('heart') + '</span><h3>فهرست علاقه‌مندی‌ها خالی است</h3><p>روی آیکون قلب هر محصول بزنید تا این‌جا ذخیره شود.</p><button type="button" class="btn btn--primary btn--sm" data-go-products>مشاهده‌ی محصولات</button></div>';
+      return;
+    }
+    wishBody.innerHTML = items.map(function (p) {
+      return '<div class="wish-item" data-product data-id="' + esc(p.id) + '" data-name="' + esc(p.name) + '" data-price="' + p.price + '" data-old="' + p.old + '" data-img="' + esc(p.img) + '" data-desc="' + esc(p.desc) + '" data-cat-name="' + esc(p.cat) + '" data-rating="' + esc(p.rating) + '" data-reviews="' + esc(p.reviews) + '">' +
+        '<img src="' + esc(p.img) + '" alt="" width="72" height="72" loading="lazy">' +
+        '<div><h4>' + esc(p.name) + '</h4><div class="price-now">' + money(p.price) + '</div><button type="button" class="btn btn--primary" data-add>' + icon('bag') + 'افزودن به سبد</button></div>' +
+        '<button type="button" class="cart-remove" data-wish="' + esc(p.id) + '" aria-label="حذف از علاقه‌مندی‌ها">' + icon('trash') + '</button></div>';
+    }).join('');
+  }
+  document.addEventListener('click', function (e) {
+    var g = e.target.closest('[data-go-products]'); if (!g) return;
+    var layer = g.closest('.drawer'); if (layer) closeLayer(layer);
     document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
-    toast('محصولات مورد علاقه‌ی شما نمایش داده شد', 'heart');
   });
 
   /* ---------- پیش‌نمایش سریع محصول ---------- */
   var qv = $('#quickview');
   document.addEventListener('click', function (e) {
-    var b = e.target.closest('[data-quick]'); if (!b || !qv) return;
+    var b = e.target.closest('[data-quick], [data-quick-id]'); if (!b || !qv) return;
     e.preventDefault();
-    var card = b.closest('[data-product]'); if (!card) return;
+    var card = b.dataset.quickId ? document.querySelector('[data-product][data-id="' + b.dataset.quickId + '"]') : b.closest('[data-product]');
+    if (!card) return;
     var p = readProduct(card);
     var off = p.old ? Math.round((1 - p.price / p.old) * 100) : 0;
     $('.qv-media img', qv).src = p.img;
@@ -388,8 +413,6 @@
     function pos() { return Math.abs(track.scrollLeft); }
     function update() {
       var max = track.scrollWidth - track.clientWidth - 4;
-      if (prev) prev.disabled = pos() <= 4;
-      if (next) next.disabled = pos() >= max;
       if (dotsWrap) {
         var idx = Math.round(pos() / step());
         $$('button', dotsWrap).forEach(function (d, i) { d.setAttribute('aria-current', i === idx ? 'true' : 'false'); });
@@ -399,10 +422,21 @@
       dotsWrap.innerHTML = Array.prototype.map.call(items, function (_, i) { return '<button type="button" aria-label="نظر ' + fa(i + 1) + '"></button>'; }).join('');
       $$('button', dotsWrap).forEach(function (d, i) { d.addEventListener('click', function () { track.scrollTo({ left: -i * step(), behavior: 'smooth' }); }); });
     }
-    if (prev) prev.addEventListener('click', function () { track.scrollBy({ left: step(), behavior: 'smooth' }); });
-    if (next) next.addEventListener('click', function () { track.scrollBy({ left: -step(), behavior: 'smooth' }); });
+    function atEnd() { return pos() >= track.scrollWidth - track.clientWidth - 4; }
+    function goNext() { if (atEnd()) track.scrollTo({ left: 0, behavior: 'smooth' }); else track.scrollBy({ left: -step(), behavior: 'smooth' }); }
+    function goPrev() { if (pos() <= 4) track.scrollTo({ left: -(track.scrollWidth - track.clientWidth), behavior: 'smooth' }); else track.scrollBy({ left: step(), behavior: 'smooth' }); }
+    if (prev) prev.addEventListener('click', function () { goPrev(); restart(); });
+    if (next) next.addEventListener('click', function () { goNext(); restart(); });
+    /* حرکت خودکار؛ با رفتن نشانگر یا لمس متوقف می‌شود */
+    var auto = null, paused = false;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function restart() { if (reduce) return; clearInterval(auto); auto = setInterval(function () { if (!paused && !document.hidden) goNext(); }, +sl.dataset.autoplay || 5500); }
+    ['mouseenter', 'focusin', 'touchstart'].forEach(function (ev) { sl.addEventListener(ev, function () { paused = true; }, { passive: true }); });
+    ['mouseleave', 'focusout'].forEach(function (ev) { sl.addEventListener(ev, function () { paused = false; }); });
+    sl.addEventListener('touchend', function () { setTimeout(function () { paused = false; }, 4000); }, { passive: true });
     track.addEventListener('scroll', function () { requestAnimationFrame(update); }, { passive: true });
     window.addEventListener('resize', update);
+    restart();
     update();
   });
 
@@ -449,4 +483,5 @@
   /* ---------- اجرای اولیه ---------- */
   renderCart();
   renderWish();
+  renderWishList();
 })();

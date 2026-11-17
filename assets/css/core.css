@@ -1,5 +1,5 @@
 /*!
- * جشنواره — مجموعه‌ی ۱۵ لندینگ فروش ویژه | نسخه‌ی 1.0.0
+ * جشنواره — مجموعه‌ی ۱۵ لندینگ فروش ویژه | نسخه‌ی 1.1.0
  * استایل پایه‌ی مشترک همه‌ی لندینگ‌ها.
  * رنگ‌ها و فونت هر لندینگ در فایل assets/css/landing-XX.css تعریف شده‌اند.
  * تغییرات شخصی را در assets/css/custom.css بنویسید.
@@ -57,7 +57,7 @@ svg.icon{width:1.25em;height:1.25em;flex:none}
 
 /* ===== ۴. نوار اعلان و هدر ===== */
 .topbar{background:var(--primary);color:var(--primary-ink);font-size:.86rem;text-align:center;position:relative}
-.topbar .container{display:flex;align-items:center;justify-content:center;gap:.6em;min-height:42px;padding-inline:36px}
+.topbar{display:flex;align-items:center;min-height:42px;overflow:hidden}
 .topbar-close{position:absolute;inset-inline-end:12px;top:50%;translate:0 -50%;width:30px;height:30px;display:grid;place-items:center;border-radius:50%;opacity:.8}
 .topbar-close:hover{opacity:1;background:rgba(255,255,255,.15)}
 .topbar.is-hidden{display:none}
@@ -780,3 +780,83 @@ body.no-scroll{overflow:hidden}
 .card--gold .card-tools{top:auto;bottom:12px;flex-direction:row}
 .card--gold .badge{top:auto;bottom:12px}
 @media (max-width:420px){.header .container{gap:8px}.logo{font-size:1.05rem;min-width:0}.logo-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.logo-mark{width:36px;height:36px}.header-actions{gap:0}.icon-btn{width:40px;height:40px}}
+
+/* =====================================================================
+   نسخه‌ی 1.1.0
+   ===================================================================== */
+/* نوار اطلاعیه‌ی متحرک */
+.topbar-ticker{flex:1;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.ticker-track{display:flex;width:max-content;animation:ticker 55s linear infinite}
+.topbar:hover .ticker-track,.topbar:focus-within .ticker-track{animation-play-state:paused}
+.ticker-group{display:flex;flex:none}
+.ticker-item{display:inline-flex;align-items:center;gap:.5em;padding-inline:28px;white-space:nowrap;font-size:.85rem;font-weight:600}
+.ticker-item .icon{width:1.05em;height:1.05em;opacity:.85}
+.ticker-item::after{content:"";width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.45;margin-inline-start:28px}
+@keyframes ticker{to{transform:translateX(50%)}}
+.topbar-close{position:static;translate:none;flex:none;margin-inline:6px}
+@media (prefers-reduced-motion:reduce){.ticker-track{animation:none}.ticker-group[aria-hidden]{display:none}}
+
+/* ورود متحرک هیرو */
+.js .hero-copy>*{animation:heroIn .9s var(--ease) both}
+.js .hero-copy>*:nth-child(2){animation-delay:.08s}.js .hero-copy>*:nth-child(3){animation-delay:.16s}.js .hero-copy>*:nth-child(4){animation-delay:.24s}.js .hero-copy>*:nth-child(5){animation-delay:.32s}.js .hero-copy>*:nth-child(6){animation-delay:.4s}
+@keyframes heroIn{from{opacity:0;transform:translateY(22px)}}
+.hero-bg img,.hero--tall .hero-media>img,.hero--minimal .min-stage img,.hero--arch .arch img{animation:kenburns 22s ease-in-out infinite alternate}
+@keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.08)}}
+.hero--arch .arch,.hero--tall .hero-media,.hero--minimal .min-stage{overflow:hidden}
+@media (prefers-reduced-motion:reduce){.js .hero-copy>*,.hero-bg img,.hero--tall .hero-media>img,.hero--minimal .min-stage img,.hero--arch .arch img{animation:none}}
+
+/* پیشنهاد ویژه: تایمر روزانه و موجودی */
+.deal-box{display:grid;gap:14px;padding:16px;margin-bottom:22px;border-radius:var(--radius-sm);background:var(--bg);border:1px dashed color-mix(in srgb,var(--primary) 45%,transparent)}
+.mode-dark .deal-box{border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+.countdown--inline{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.countdown--inline .countdown-label{color:var(--accent)}
+.countdown--inline .cd-box{min-width:56px;padding:6px 6px 4px}
+.countdown--inline .cd-box b{font-size:1.25rem}
+.stock-row{display:flex;justify-content:space-between;gap:10px;font-size:.85rem;color:var(--muted)}
+.stock-row b{color:var(--text)}
+.stock .sold-bar{height:8px;margin-top:8px}
+
+/* خرید از روی عکس */
+.look{display:grid;grid-template-columns:1.5fr 1fr;gap:clamp(20px,3vw,40px);align-items:center}
+.look-media{position:relative;border-radius:var(--radius);overflow:hidden}
+.look-media>img{width:100%}
+.hotspot{position:absolute;translate:-50% -50%;z-index:2}
+.hs-dot{position:relative;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#fff;color:#111;font-weight:900;font-size:.85rem;box-shadow:0 6px 18px -4px rgba(0,0,0,.5)}
+.hs-dot::before{content:"";position:absolute;inset:-7px;border-radius:50%;border:2px solid #fff;animation:pulse 2s ease-out infinite}
+@keyframes pulse{from{opacity:.9;transform:scale(.8)}to{opacity:0;transform:scale(1.5)}}
+.hs-tip{position:absolute;bottom:calc(100% + 10px);left:50%;translate:-50% 6px;min-width:160px;padding:8px 12px;border-radius:10px;background:#fff;color:#111;font-size:.8rem;line-height:1.6;text-align:center;box-shadow:0 12px 26px -10px rgba(0,0,0,.45);opacity:0;visibility:hidden;transition:all .25s var(--ease)}
+.hs-tip b{display:block;font-size:.86rem}
+.hotspot:hover .hs-tip,.hotspot:focus-visible .hs-tip{opacity:1;visibility:visible;translate:-50% 0}
+.look-side{display:grid;gap:14px}
+.look-list{display:grid;gap:10px}
+.look-item{display:grid;grid-template-columns:auto 64px 1fr auto;align-items:center;gap:12px;padding:10px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--line)}
+.look-item img{width:64px;height:64px;border-radius:10px;object-fit:cover;background:#fff}
+.look-num{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--primary);color:var(--primary-ink);font-size:.78rem;font-weight:900}
+.look-name{display:block;text-align:start;font-weight:800;font-size:.92rem;line-height:1.5}
+.look-name:hover{color:var(--primary)}
+.look-item .price-now{font-size:.92rem}
+.look-add{border:1.5px solid var(--line)}
+.look-add:hover{background:var(--primary);color:var(--primary-ink);border-color:var(--primary)}
+.look-total{display:flex;justify-content:space-between;align-items:center;padding:4px 4px 0;font-weight:700;color:var(--muted)}
+.look-total b{font-size:1.25rem;color:var(--text)}
+@media (max-width:900px){.look{grid-template-columns:1fr}}
+
+/* علاقه‌مندی‌ها */
+.wish-item{display:grid;grid-template-columns:72px 1fr auto;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+.wish-item img{width:72px;height:72px;border-radius:10px;object-fit:cover;background:#fff}
+.wish-item h4{font-size:.92rem;line-height:1.6}
+.wish-item .btn{margin-top:6px;min-height:34px;font-size:.8rem;padding:.3em .9em}
+.empty-state{text-align:center;padding:44px 10px;color:var(--muted)}
+.empty-state .es-icon{width:84px;height:84px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;background:var(--surface);color:var(--primary)}
+.mode-dark .empty-state .es-icon{color:var(--accent)}
+.empty-state .es-icon .icon{width:40px;height:40px}
+.empty-state h3{color:var(--text);font-size:1.1rem;margin-bottom:6px}
+.empty-state p{font-size:.9rem;margin-bottom:18px}
+
+/* خبرنامه و فوتر */
+@media (max-width:480px){.news-form{flex-direction:column;background:transparent;border:0;padding:0}.news-form input{min-height:50px;border-radius:var(--btn-radius,var(--radius));background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3)}.news-form .btn{width:100%}}
+.news-msg .coupon{margin-inline-start:6px}
+.footer-links a,.footer-contact a{transition:color .2s,opacity .2s}
+.footer-links a:hover{opacity:1;color:#fff}
+.footer-bottom span:last-child{text-align:end}
+@media (max-width:560px){.footer-bottom{flex-direction:column;align-items:center;text-align:center}.footer-bottom span:last-child{text-align:center}.trust-badges{justify-content:flex-start}}

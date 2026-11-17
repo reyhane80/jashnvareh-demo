@@ -1,4 +1,4 @@
-/*! جشنواره — صفحه‌ی انتخاب لندینگ‌ها | نسخه‌ی 1.0.0 */
+/*! جشنواره — صفحه‌ی انتخاب لندینگ‌ها | نسخه‌ی 1.1.0 */
 (function () {
   'use strict';
   var chips = document.querySelectorAll('.chip-btn');
