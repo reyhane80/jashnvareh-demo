@@ -16,8 +16,8 @@
   <!-- فونت‌ها داخل فایل CSS جاسازی شده‌اند تا بدون سرور و اینترنت هم کار کنند -->
   <link rel="stylesheet" href="assets/css/fonts/vazirmatn.css">
   <link rel="stylesheet" href="assets/css/fonts/el-messiri.css">
-  <link rel="stylesheet" href="assets/css/core.css?v=1.3.2">
-  <link rel="stylesheet" href="assets/css/landing-09.css?v=1.3.2">
+  <link rel="stylesheet" href="assets/css/core.css?v=1.4.0">
+  <link rel="stylesheet" href="assets/css/landing-09.css?v=1.4.0">
   <!-- تغییرات شخصی خود را در custom.css بنویسید (همیشه آخر بارگذاری می‌شود) -->
   <link rel="stylesheet" href="assets/css/custom.css">
   <script>document.documentElement.classList.add('js');</script>
@@ -478,7 +478,7 @@
 <div class="drawer drawer--end" id="cart" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="cart-title">
   <div class="drawer-backdrop" data-close></div>
   <div class="drawer-panel">
-    <div class="drawer-head"><h2 id="cart-title">سبد خرید</h2><span class="cart-head-count" data-cart-items-label></span><button type="button" class="icon-btn" data-close aria-label="بستن سبد خرید"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+    <div class="drawer-head"><span class="dh-icon"><svg class="icon" aria-hidden="true"><use href="#i-bag"/></svg></span><div class="dh-text"><h2 id="cart-title">سبد خرید</h2><span class="cart-head-count" data-cart-items-label></span></div><button type="button" class="icon-btn" data-close aria-label="بستن سبد خرید"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
     <ol class="cart-steps" aria-label="مراحل خرید"><li data-step-dot="items"><svg class="icon" aria-hidden="true"><use href="#i-bag"/></svg><span>سبد خرید</span></li><li data-step-dot="form"><svg class="icon" aria-hidden="true"><use href="#i-truck"/></svg><span>اطلاعات ارسال</span></li><li data-step-dot="done"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>ثبت سفارش</span></li></ol>
     <div class="drawer-body">
       <div data-step="items"><div id="cart-items"></div></div>
@@ -513,8 +513,9 @@
 <div class="drawer drawer--end" id="wishlist" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="wish-title">
   <div class="drawer-backdrop" data-close></div>
   <div class="drawer-panel">
-    <div class="drawer-head"><h2 id="wish-title">علاقه‌مندی‌ها</h2><button type="button" class="icon-btn" data-close aria-label="بستن علاقه‌مندی‌ها"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+    <div class="drawer-head"><span class="dh-icon"><svg class="icon" aria-hidden="true"><use href="#i-heart"/></svg></span><div class="dh-text"><h2 id="wish-title">علاقه‌مندی‌ها</h2><span data-wish-label>محصولاتی که دوست دارید</span></div><button type="button" class="icon-btn" data-close aria-label="بستن علاقه‌مندی‌ها"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
     <div class="drawer-body"><div id="wish-items"></div></div>
+    <div class="drawer-perks"><span><svg class="icon" aria-hidden="true"><use href="#i-sun"/></svg>محافظ UV400</span><span><svg class="icon" aria-hidden="true"><use href="#i-leaf"/></svg>حصیر طبیعی</span><span><svg class="icon" aria-hidden="true"><use href="#i-truck"/></svg>ارسال رایگان</span></div>
   </div>
 </div>
 <div class="modal" id="quickview" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="qv-name">
@@ -537,7 +538,7 @@
 <button type="button" class="to-top" aria-label="بازگشت به بالا"><svg class="icon" aria-hidden="true"><use href="#i-arrow-up"/></svg></button>
 <!-- نوار پیش‌نمایش دمو: در نسخه‌ی نهایی سایت خود می‌توانید این بخش را حذف کنید -->
 <nav class="demo-bar" aria-label="پیش‌نمایش دمو"><a href="index.html"><svg class="icon" aria-hidden="true"><use href="#i-grid"/></svg><span class="label">همه‌ی لندینگ‌ها</span></a></nav>
-<script src="assets/js/main.js?v=1.3.2" defer></script>
+<script src="assets/js/main.js?v=1.4.0" defer></script>
 <!-- اسکریپت‌های شخصی خود را در custom.js بنویسید -->
 <script src="assets/js/custom.js" defer></script>
 </body>

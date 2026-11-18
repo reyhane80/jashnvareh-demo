@@ -1,5 +1,5 @@
 /*!
- * جشنواره — مجموعه‌ی ۱۵ لندینگ فروش ویژه | نسخه‌ی 1.3.2
+ * جشنواره — مجموعه‌ی ۱۵ لندینگ فروش ویژه | نسخه‌ی 1.4.0
  * اسکریپت مشترک همه‌ی لندینگ‌ها (جاوااسکریپت خالص، بدون کتابخانه).
  *
  * تنظیمات هر صفحه از ویژگی‌های data روی تگ <body> خوانده می‌شود:
@@ -162,6 +162,24 @@
     return el ? readProduct(el) : null;
   }
 
+  /* ---------- پیشنهاد محصول در حالت خالی ---------- */
+  function suggest(kind) {
+    var skip = kind === 'wish' ? wish : cart.map(function (i) { return i.id; });
+    var cards = $$('.products .card').filter(function (c) { return skip.indexOf(c.dataset.id) === -1; }).slice(0, 3);
+    if (!cards.length) return '';
+    return '<div class="suggest"><h4 class="suggest-title">' + icon('sparkle') + (kind === 'wish' ? 'شاید این‌ها را دوست داشته باشید' : 'پیشنهاد ویژه برای شما') + '</h4>' + cards.map(function (c) {
+      var p = readProduct(c);
+      var btn = kind === 'wish'
+        ? '<button type="button" class="suggest-btn" data-wish="' + esc(p.id) + '" aria-label="افزودن به علاقه‌مندی‌ها">' + icon('heart') + '</button>'
+        : '<button type="button" class="suggest-btn" data-add aria-label="افزودن به سبد">' + icon('plus') + '</button>';
+      return '<div class="suggest-item" data-product data-id="' + esc(p.id) + '" data-name="' + esc(p.name) + '" data-price="' + p.price + '" data-old="' + p.old + '" data-img="' + esc(p.img) + '" data-desc="' + esc(p.desc) + '" data-cat-name="' + esc(p.cat) + '" data-rating="' + esc(p.rating) + '" data-reviews="' + esc(p.reviews) + '">' +
+        '<img src="' + esc(p.img) + '" alt="" width="60" height="60" loading="lazy"><div><b>' + esc(p.name) + '</b><span>' + money(p.price) + '</span></div>' + btn + '</div>';
+    }).join('') + '</div>';
+  }
+  function emptyArt(ic) {
+    return '<div class="es-art" aria-hidden="true"><span class="es-ring"></span><span class="es-dot d1"></span><span class="es-dot d2"></span><span class="es-dot d3"></span><span class="es-icon">' + icon(ic) + '</span></div>';
+  }
+
   /* ---------- سبد خرید ---------- */
   var cart = store.get(KEY_CART, []);
   var cartBody = $('#cart-items');
@@ -182,12 +200,12 @@
   }
   function renderCart() {
     var q = cartQty();
-    var lbl = $('[data-cart-items-label]'); if (lbl) lbl.textContent = q ? fa(q) + ' کالا' : '';
+    var lbl = $('[data-cart-items-label]'); if (lbl) lbl.textContent = q ? fa(q) + ' کالا در سبد شما' : 'هنوز کالایی اضافه نشده';
     cartCounts.forEach(function (c) { c.textContent = q ? fa(q) : ''; if (q) c.removeAttribute('data-zero'); else c.setAttribute('data-zero', ''); });
     if (!cartBody) return;
     showStep('items');
     if (!cart.length) {
-      cartBody.innerHTML = '<div class="empty-state"><span class="es-icon">' + icon('bag') + '</span><h3>سبد خرید شما خالی است</h3><p>محصولات پیشنهادی جشنواره را ببینید و به سبد اضافه کنید.</p><button type="button" class="btn btn--primary btn--sm" data-cart-shop>مشاهده‌ی محصولات</button></div>';
+      cartBody.innerHTML = '<div class="empty-state">' + emptyArt('bag') + '<h3>سبد خرید شما خالی است</h3><p>محصولات پیشنهادی جشنواره را ببینید و به سبد اضافه کنید.</p><button type="button" class="btn btn--primary btn--sm" data-cart-shop>' + icon('bag') + 'مشاهده‌ی محصولات</button></div>' + suggest('cart');
       cartFoot.hidden = true;
       var shop = $('[data-cart-shop]', cartBody);
       if (shop) shop.addEventListener('click', function () { closeLayer($('#cart')); location.hash = '#products'; });
@@ -202,7 +220,7 @@
         '<input type="number" min="1" max="99" value="' + i.qty + '" aria-label="تعداد" inputmode="numeric">' +
         '<button type="button" data-q="-1" aria-label="کاهش">' + icon('minus') + '</button></div></div>' +
         '<button type="button" class="cart-remove" aria-label="حذف از سبد">' + icon('trash') + '</button></div>';
-    }).join('');
+    }).join('') + suggest('cart');
     var total = cartTotal();
     var ship = FREE_SHIP && total >= FREE_SHIP ? 0 : SHIP_COST;
     var save = cart.reduce(function (s, i) { return s + (i.old > i.price ? (i.old - i.price) * i.qty : 0); }, 0);
@@ -337,14 +355,16 @@
     if (!wishBody) return;
     var items = wish.map(findProduct).filter(Boolean);
     if (!items.length) {
-      wishBody.innerHTML = '<div class="empty-state"><span class="es-icon">' + icon('heart') + '</span><h3>فهرست علاقه‌مندی‌ها خالی است</h3><p>روی آیکون قلب هر محصول بزنید تا این‌جا ذخیره شود.</p><button type="button" class="btn btn--primary btn--sm" data-go-products>مشاهده‌ی محصولات</button></div>';
+      wishBody.innerHTML = '<div class="empty-state">' + emptyArt('heart') + '<h3>فهرست علاقه‌مندی‌ها خالی است</h3><p>روی آیکون قلب هر محصول بزنید تا این‌جا ذخیره شود.</p><button type="button" class="btn btn--primary btn--sm" data-go-products>' + icon('bag') + 'مشاهده‌ی محصولات</button></div>' + suggest('wish');
+      var wl = $('[data-wish-label]'); if (wl) wl.textContent = 'محصولاتی که دوست دارید';
       return;
     }
+    var wl2 = $('[data-wish-label]'); if (wl2) wl2.textContent = fa(items.length) + ' محصول ذخیره‌شده';
     var groups = {};
     items.forEach(function (p) { (groups[p.cat || 'سایر'] = groups[p.cat || 'سایر'] || []).push(p); });
     wishBody.innerHTML = Object.keys(groups).map(function (g) {
       return '<div class="wish-group"><h3 class="wish-group-title">' + esc(g) + '<span>' + fa(groups[g].length) + '</span></h3><div class="wish-grid">' + groups[g].map(wishCard).join('') + '</div></div>';
-    }).join('');
+    }).join('') + suggest('wish');
   }
   function wishCard(p) {
       return '<div class="wish-item" data-product data-id="' + esc(p.id) + '" data-name="' + esc(p.name) + '" data-price="' + p.price + '" data-old="' + p.old + '" data-img="' + esc(p.img) + '" data-desc="' + esc(p.desc) + '" data-cat-name="' + esc(p.cat) + '" data-rating="' + esc(p.rating) + '" data-reviews="' + esc(p.reviews) + '">' +
