@@ -1,11 +1,19 @@
 /*!
- * جشنواره — مجموعه‌ی ۱۵ لندینگ فروش ویژه | نسخه‌ی 1.7.0
+ * جشنواره — مجموعه‌ی ۱۵ لندینگ فروش ویژه | نسخه‌ی 1.7.1
  * اسکریپت مشترک همه‌ی لندینگ‌ها (جاوااسکریپت خالص، بدون کتابخانه).
  *
  * تنظیمات هر صفحه از ویژگی‌های data روی تگ <body> خوانده می‌شود:
  *   data-store        شناسه‌ی یکتای فروشگاه (برای ذخیره‌ی سبد خرید)
  *   data-free-ship    حداقل مبلغ ارسال رایگان (تومان)
  *   data-ship-cost    هزینه‌ی ارسال (تومان)
+ *
+ * ارسال سفارش (اختیاری؛ هر کدام را که لازم دارید روی <body> بنویسید):
+ *   data-order-whatsapp   شماره‌ی واتس‌اپ با کد کشور، مثلاً 989121234567
+ *   data-order-email      ایمیل دریافت سفارش‌ها
+ *   data-order-endpoint   آدرس سرور شما؛ سفارش به‌صورت JSON با POST فرستاده می‌شود
+ *
+ * اتصال به فروشگاه اصلی: اگر روی کارت محصول data-link="آدرس صفحه‌ی محصول" بنویسید،
+ * دکمه‌ی «افزودن به سبد» کاربر را به همان صفحه می‌برد.
  *
  * اطلاعات هر محصول روی خود کارت محصول (ویژگی‌های data-*) نوشته شده است؛
  * برای تغییر نام، قیمت یا عکس فقط همان کارت را ویرایش کنید.
@@ -155,7 +163,7 @@
   /* ---------- اطلاعات محصول از روی کارت ---------- */
   function readProduct(el) {
     var d = el.dataset;
-    return { id: d.id, name: d.name, price: +d.price, old: +d.old || 0, img: d.img, desc: d.desc || '', cat: d.catName || '', rating: d.rating || '', reviews: d.reviews || '' };
+    return { id: d.id, name: d.name, price: +d.price, old: +d.old || 0, img: d.img, desc: d.desc || '', cat: d.catName || '', rating: d.rating || '', reviews: d.reviews || '', link: d.link || '' };
   }
   function findProduct(id) {
     var el = document.querySelector('[data-product][data-id="' + id + '"]');
@@ -264,6 +272,19 @@
     b.addEventListener('click', function () { showStep(b.dataset.goStep); var f = $('[data-step="' + b.dataset.goStep + '"] input'); if (f) f.focus(); });
   });
 
+  /* ---------- آماده‌سازی متن و داده‌ی سفارش ---------- */
+  function buildOrder(code) {
+    var tm = function (n) { return fa(n) + ' تومان'; };
+    var el = checkout.elements, val = function (n) { return el[n] ? el[n].value.trim() : ''; };
+    var sum = cart.reduce(function (a, i) { return a + i.price * i.qty; }, 0);
+    var ship = FREE_SHIP && sum >= FREE_SHIP ? 0 : SHIP_COST;
+    var lines = cart.map(function (i) { return '• ' + i.name + ' × ' + fa(i.qty) + ' = ' + tm(i.price * i.qty); });
+    var customer = { name: val('name'), phone: val('phone'), address: val('address'), note: val('note') };
+    var text = ['سفارش ' + code, document.title, ''].concat(lines, ['', 'هزینه‌ی ارسال: ' + (ship ? tm(ship) : 'رایگان'), 'جمع کل: ' + tm(sum + ship), '',
+      'نام: ' + customer.name, 'موبایل: ' + customer.phone, 'آدرس: ' + customer.address]).concat(customer.note ? ['توضیحات: ' + customer.note] : []).join('\n');
+    return { code: code, page: location.href, items: cart.map(function (i) { return { id: i.id, name: i.name, price: i.price, qty: i.qty }; }), shipping: ship, total: sum + ship, customer: customer, text: text };
+  }
+
   var checkout = $('#checkout-form');
   if (checkout) {
     var rules = {
@@ -282,14 +303,29 @@
         if (res !== true) { $('.field-error', field).textContent = res; if (ok) input.focus(); ok = false; }
       });
       if (!ok) return;
-      /* در نسخه‌ی واقعی، این‌جا اطلاعات را به درگاه پرداخت یا سرور خود بفرستید. */
       var code = 'JS-' + Math.floor(100000 + Math.random() * 899999);
-      $('[data-order-code]').textContent = code;
-      $('[data-order-name]').textContent = checkout.elements.name.value.trim();
-      cart = []; store.set(KEY_CART, cart);
-      checkout.reset();
-      renderCart();
-      showStep('done');
+      var order = buildOrder(code);
+      var finish = function () {
+        $('[data-order-code]').textContent = code;
+        $('[data-order-name]').textContent = order.customer.name;
+        cart = []; store.set(KEY_CART, cart);
+        checkout.reset();
+        renderCart();
+        showStep('done');
+      };
+      /* ارسال سفارش؛ تنظیمات روی تگ body (توضیح ابتدای همین فایل) */
+      var bd = body.dataset;
+      if (bd.orderWhatsapp) window.open('https://wa.me/' + bd.orderWhatsapp.replace(/\D/g, '') + '?text=' + encodeURIComponent(order.text), '_blank', 'noopener');
+      else if (bd.orderEmail) window.location.href = 'mailto:' + bd.orderEmail + '?subject=' + encodeURIComponent('سفارش ' + code) + '&body=' + encodeURIComponent(order.text);
+      if (bd.orderEndpoint && window.fetch) {
+        var btn = checkout.querySelector('[type="submit"]'); if (btn) btn.disabled = true;
+        fetch(bd.orderEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(order) })
+          .then(function (r) { if (!r.ok) throw new Error(r.status); finish(); })
+          .catch(function () { var f = checkout.elements.address.closest('.field'); f.classList.add('has-error'); $('.field-error', f).textContent = 'ارسال سفارش انجام نشد. لطفاً دوباره تلاش کنید یا تماس بگیرید.'; })
+          .then(function () { if (btn) btn.disabled = false; });
+        return;
+      }
+      finish();
     });
     $$('input, textarea', checkout).forEach(function (i) {
       i.addEventListener('input', function () { i.closest('.field').classList.remove('has-error'); });
@@ -303,6 +339,8 @@
       e.preventDefault();
       var src = add.closest('[data-product]') || document.querySelector('[data-product][data-id="' + add.dataset.add + '"]');
       if (!src) return;
+      /* اگر محصول به صفحه‌ی فروشگاه اصلی لینک شده باشد، به همان صفحه می‌رود */
+      if (src.dataset.link) { window.location.href = src.dataset.link; return; }
       var qtyInput = add.dataset.qty ? document.getElementById(add.dataset.qty) : null;
       addToCart(readProduct(src), qtyInput ? Math.max(1, parseInt(qtyInput.value, 10) || 1) : 1);
       if (add.closest('.modal')) closeLayer(add.closest('.modal'));
