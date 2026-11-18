@@ -1,5 +1,5 @@
 /*!
- * جشنواره — مجموعه‌ی ۱۵ لندینگ فروش ویژه | نسخه‌ی 1.5.1
+ * جشنواره — مجموعه‌ی ۱۵ لندینگ فروش ویژه | نسخه‌ی 1.6.0
  * استایل پایه‌ی مشترک همه‌ی لندینگ‌ها.
  * رنگ‌ها و فونت هر لندینگ در فایل assets/css/landing-XX.css تعریف شده‌اند.
  * تغییرات شخصی را در assets/css/custom.css بنویسید.
@@ -1460,3 +1460,68 @@ a.faq-contact:hover{border-color:color-mix(in srgb,var(--primary) 50%,transparen
 .faq-cta{padding:8px 14px;min-height:0}
 .faq-cta-ic{width:40px;height:40px}
 .faq-cta-ic .icon{width:20px;height:20px}
+
+/* ===== 1.6.0 — پس‌زمینه‌ی یکسان عکس محصولات ===== */
+:root{--prod-bg:color-mix(in srgb,var(--primary) 6%,#f5f4f1)}
+.mode-dark{--prod-bg:color-mix(in srgb,var(--primary) 10%,var(--surface2))}
+.card .card-media,.mode-light .card .card-media,.featured-media,.amz-media,.qv-media,.wish-media,.look-item img,.suggest-item img,.cart-item img,.float-card img,.cats--circles .cat-media,.cats--pills .cat-media,.cats--tiles .cat-media,.cats--arches .cat-media,.cats--banner .cat-media{background:var(--prod-bg)!important}
+.card .card-media img,.amz-media img,.featured-media img{object-fit:contain}
+.featured-media img{mix-blend-mode:normal!important}
+
+/* ===== متن کارت‌های محصول همیشه وسط‌چین ===== */
+.card .card-body{align-items:center;text-align:center}
+.card .card-title button{text-align:center}
+.card .rating,.card .price,.card .card-meta{justify-content:center}
+.card .sold{width:100%;text-align:center}
+.card .sold-bar{width:100%}
+.card .card-actions{width:100%}
+.card .card-cat{align-self:center}
+
+/* ===== دسته‌بندی بنری: کارت با عنوان وسط‌چین ===== */
+.cats--banner{gap:18px;border:0;background:none!important;border-radius:0;overflow:visible}
+.cats--banner .cat,.cats--banner .cat:first-child{position:relative;display:flex;flex-direction:column;border:1px solid var(--line)!important;border-radius:var(--radius);overflow:hidden;background:var(--surface);text-align:center;transition:transform .45s var(--ease),box-shadow .45s var(--ease)}
+.cats--banner .cat:hover{transform:translateY(-6px);box-shadow:0 26px 50px -30px rgba(0,0,0,.35)}
+.cats--banner .cat-media{position:relative;overflow:hidden}
+.cats--banner .cat-media img{width:100%;height:100%;object-fit:contain;transition:transform .7s var(--ease)}
+.cats--banner .cat:hover .cat-media img{transform:scale(1.06)}
+.cats--banner .cat-label{flex-direction:column;justify-content:center;align-items:center;gap:10px;padding:18px 16px 20px;position:relative}
+.cats--banner .cat-label::before{content:"";position:absolute;top:0;inset-inline:30%;height:3px;border-radius:0 0 3px 3px;background:var(--primary);transform:scaleX(.3);transition:transform .45s var(--ease)}
+.cats--banner .cat:hover .cat-label::before{transform:scaleX(1)}
+.cats--banner .cat-name{font-family:var(--font-display);font-size:1.25rem;font-weight:800}
+.cats--banner .cat-label .icon{width:34px;height:34px;padding:8px;border-radius:50%;border:1px solid var(--line);transition:background .3s,color .3s,transform .3s var(--ease)}
+.cats--banner .cat:hover .cat-label .icon{background:var(--primary);color:var(--primary-ink);border-color:var(--primary);transform:translateX(-4px)}
+@media (max-width:860px){.cats--banner{gap:12px}.cats--banner .cat:nth-child(n+3){border-top:1px solid var(--line)!important}}
+
+/* ===== کادر موجی روی تصاویر (خود عکس تغییر شکل نمی‌دهد) ===== */
+.banner-media,.about-media img,.st-img,.news-split-media{transition:border-radius .6s var(--ease)}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  .banner:hover .banner-media,.about-media img:hover,.st-img:hover,.news-split:hover .news-split-media{animation:frameWave 3.2s ease-in-out infinite}
+}
+.banner-media{overflow:hidden}
+@keyframes frameWave{
+  0%,100%{border-radius:28% 72% 44% 56% / 38% 34% 66% 62%}
+  25%{border-radius:62% 38% 58% 42% / 52% 62% 38% 48%}
+  50%{border-radius:40% 60% 30% 70% / 62% 40% 60% 38%}
+  75%{border-radius:56% 44% 66% 34% / 34% 58% 42% 66%}
+}
+
+/* ===== باکس‌های آمار: طراحی تازه ===== */
+.stats--stack{position:relative;overflow:hidden;padding:10px;gap:10px;background:linear-gradient(160deg,color-mix(in srgb,var(--primary) 12%,var(--surface)),var(--surface) 60%);border:1px solid color-mix(in srgb,var(--primary) 20%,var(--line))}
+.stats--stack::after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;inset-inline-end:-80px;top:-90px;background:radial-gradient(closest-side,color-mix(in srgb,var(--accent) 30%,transparent),transparent);pointer-events:none}
+.stats--stack .stat,.stats--stack .stat+.stat{position:relative;z-index:1;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;padding:18px 20px;border:1px solid var(--line);border-radius:calc(var(--radius) * .8);background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(6px);transition:transform .35s var(--ease),border-color .35s}
+.stats--stack .stat:hover{transform:translateX(-6px);border-color:color-mix(in srgb,var(--primary) 45%,transparent)}
+.st-ic{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:var(--primary);color:var(--primary-ink);box-shadow:0 12px 24px -12px var(--primary)}
+.st-ic .icon{width:26px;height:26px}
+.st-tx{display:grid;gap:2px;text-align:start}
+.stats--stack .stat .st-tx span{font-size:1rem;font-weight:800;color:var(--text)}
+.st-tx small{font-size:.78rem;color:var(--muted)}
+.stats--stack .stat b{order:0;font-size:clamp(2.2rem,4.4vw,3.4rem);background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent!important;padding-inline:4px}
+.section--ink .stats--stack .stat b,.mode-dark .stats--stack .stat b{background:linear-gradient(135deg,#fff,var(--accent));-webkit-background-clip:text;background-clip:text}
+.section--ink .stats--stack{background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.02));border-color:var(--line)}
+.section--ink .stats--stack .stat{background:rgba(255,255,255,.04)}
+.section--ink .st-ic{background:var(--accent);color:#fff}
+
+/* ===== خبرنامه: فرم و متن در یک راستا ===== */
+.news-msg:empty{display:none}
+.news{align-items:center}
+.news>div:last-child{align-self:center}

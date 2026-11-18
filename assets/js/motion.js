@@ -1,12 +1,12 @@
 /*!
- * جشنواره — حرکت‌ها و افکت‌های تصویری | نسخه‌ی 1.5.1
+ * جشنواره — حرکت‌ها و افکت‌های تصویری | نسخه‌ی 1.6.0
  * بدون هیچ کتابخانه‌ی خارجی. همه‌ی بخش‌ها با «کاهش حرکت» سیستم‌عامل خاموش می‌شوند.
  *
  * فهرست:
  *  ۱. صفحه‌ی بارگذاری (body[data-loader]: counter | curtain)
  *  ۲. آشکار شدن کلمه‌به‌کلمه‌ی تیترها و متن‌ها
  *  ۳. شمارنده‌ی اعداد، آشکار شدن تصاویر، پارالاکس
- *  ۴. دکمه‌های مغناطیسی و موج روی تصاویر
+ *  ۴. دکمه‌های مغناطیسی
  *  ۵. اسلایدر پیشنهاد شگفت‌انگیز
  *  ۶. افکت هیرو (section.hero[data-fx]):
  *     liquid | hearts | petals | doodles | bubbles | embers | steam | sparks | stars | shader | cursor | tilt
@@ -180,33 +180,6 @@
       b.addEventListener('mouseleave', function () { b.style.transform = ''; });
     });
   }
-
-  /* ---------- موج آبی روی تصاویر بنر و درباره‌ی ما ---------- */
-  if (fine && !reduce) (function wobble() {
-    var imgs = $$('.banner-media img, .about-media img, .st-img img, .news-split-media img');
-    if (!imgs.length) return;
-    var ns = 'http://www.w3.org/2000/svg';
-    var svg = doc.createElementNS(ns, 'svg');
-    svg.setAttribute('width', '0'); svg.setAttribute('height', '0'); svg.setAttribute('aria-hidden', 'true');
-    svg.style.position = 'absolute';
-    svg.innerHTML = '<filter id="fx-wobble"><feTurbulence type="fractalNoise" baseFrequency="0.009" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0"/></filter>';
-    body.appendChild(svg);
-    var turb = svg.querySelector('feTurbulence'), disp = svg.querySelector('feDisplacementMap');
-    var cur = null, x = 0, v = 0, target = 0, running = false;
-    function loop() {
-      /* فنر با کشش ۱۴۰ و اصطکاک ۱۳ */
-      var dt = 1 / 60; v += (-140 * (x - target) - 13 * v) * dt; x += v * dt;
-      disp.setAttribute('scale', x.toFixed(2));
-      turb.setAttribute('baseFrequency', (0.009 + Math.max(0, x) / 24 * 0.013).toFixed(4));
-      if (Math.abs(x - target) > .05 || Math.abs(v) > .05) raf(loop);
-      else { running = false; if (target === 0 && cur) { cur.style.filter = ''; cur = null; } }
-    }
-    function go(t) { target = t; if (!running) { running = true; raf(loop); } }
-    imgs.forEach(function (im) {
-      im.addEventListener('mouseenter', function () { if (cur && cur !== im) cur.style.filter = ''; cur = im; im.style.filter = 'url(#fx-wobble)'; go(24); });
-      im.addEventListener('mouseleave', function () { go(0); });
-    });
-  })();
 
   /* ---------- ۵. اسلایدر پیشنهاد شگفت‌انگیز ---------- */
   $$('.amz').forEach(function (box) {
