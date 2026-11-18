@@ -31,8 +31,8 @@
 .filter-tab[aria-pressed="true"]{box-shadow:0 0 18px -2px var(--primary)}
 .feature{background:linear-gradient(160deg,var(--surface2),var(--surface))}
 .feature-icon{background:transparent;border:1px solid var(--accent);box-shadow:inset 0 0 14px -4px var(--accent)}
-.banner::after{background:linear-gradient(to top,rgba(7,7,11,.92),rgba(7,7,11,.1) 75%)}
-.banner h3{font-weight:400;font-size:clamp(1.8rem,3.2vw,2.6rem)}
+.banner h3{font-weight:400;font-size:clamp(1.5rem,2.6vw,2.1rem)}
+.banner{border-color:color-mix(in srgb,var(--primary) 30%,transparent)}
 .bundle--hot{box-shadow:0 0 0 1px var(--primary),0 0 50px -10px var(--primary)}
 .bundle h3,.featured-body h2,.about-body h2,.faq-aside h2{font-weight:400}
 .news{background:linear-gradient(120deg,#ff2bd6,#7c3aed 55%,#22e1ff);color:#fff}

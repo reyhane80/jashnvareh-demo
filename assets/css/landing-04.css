@@ -30,7 +30,7 @@
 .card--soft .card-media{background:#fff}
 .cats--pills{grid-template-columns:repeat(4,1fr)}
 .cats--pills .cat{padding:8px 8px 8px 18px}
-.banner{border-radius:40px}
+.banner{border-radius:32px}
 .news{background:linear-gradient(135deg,var(--primary),#1e5c39)}
 .feature{background:#fff;border:0;box-shadow:0 8px 30px -22px rgba(31,53,39,.5)}
 .feature-icon{border-radius:50%;background:#fbe7ee;color:var(--accent)}

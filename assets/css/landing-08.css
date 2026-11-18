@@ -39,7 +39,7 @@
 .cats--circles .cat-media{box-shadow:0 0 0 3px var(--line),6px 6px 0 3px var(--line)}
 .section--alt{background:#fff1b8}
 .news{background:var(--accent);border:3px solid var(--line);box-shadow:8px 8px 0 var(--line)}
-.banner{border:3px solid var(--line);box-shadow:8px 8px 0 var(--line)}
+.banner{border:3px solid var(--line);box-shadow:8px 8px 0 var(--line);background:#fff}
 .featured-media{border:3px solid var(--line);box-shadow:8px 8px 0 var(--line)}
 .bundle--hot{border-color:var(--primary);box-shadow:5px 5px 0 var(--primary)}
 .price-now{color:var(--primary)}
