@@ -20,6 +20,9 @@
   --footer-bg:#0d1626;
   --footer-ink:#ece8e4;
   --pattern-on-primary:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14'><path d='M7 0v14' stroke='%23ffffff' stroke-width='1'/></svg>");
+  --ink-bg:#14213a;
+  --amz:#14213a;
+  --amz-ink:#f2efe8;
 }
 .section--pattern{background-color:var(--surface)}
 .section--pattern::before{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14'><path d='M7 0v14' stroke='%2314213a' stroke-width='1'/></svg>");opacity:0.12;-webkit-mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);pointer-events:none}

@@ -20,6 +20,9 @@
   --footer-bg:#111111;
   --footer-ink:#ece8e4;
   --pattern-on-primary:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><circle cx='3' cy='3' r='1.6' fill='%23ffffff'/></svg>");
+  --ink-bg:#111111;
+  --amz:#c1121f;
+  --amz-ink:#ffffff;
 }
 .hero-title,.section-title,.featured-body h2,.about-body h2,.faq-aside h2,.bundle h3,.banner h3,.news h2{font-weight:700}
 .section-title{font-size:clamp(2rem,4.8vw,3.6rem);letter-spacing:-.01em}

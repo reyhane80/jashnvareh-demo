@@ -1,5 +1,5 @@
 /*!
- * جشنواره — مجموعه‌ی ۱۵ لندینگ فروش ویژه | نسخه‌ی 1.4.0
+ * جشنواره — مجموعه‌ی ۱۵ لندینگ فروش ویژه | نسخه‌ی 1.5.0
  * استایل پایه‌ی مشترک همه‌ی لندینگ‌ها.
  * رنگ‌ها و فونت هر لندینگ در فایل assets/css/landing-XX.css تعریف شده‌اند.
  * تغییرات شخصی را در assets/css/custom.css بنویسید.
@@ -1087,3 +1087,342 @@ a.faq-contact:hover{border-color:color-mix(in srgb,var(--primary) 50%,transparen
 .cart-item{background:var(--surface);box-shadow:0 8px 20px -18px rgba(0,0,0,.4)}
 .free-ship:empty{display:none}
 .cart-item+.suggest,.wish-group+.suggest{margin-top:18px}
+
+/* =====================================================================
+   نسخه‌ی 1.5.0 — پیشنهاد شگفت‌انگیز، چیدمان‌های متفاوت و حرکت‌ها
+   ===================================================================== */
+
+/* ---------- پیشنهاد شگفت‌انگیز ---------- */
+.section--amazing{padding-block:calc(var(--section) * .55)}
+.amz{position:relative;display:grid;grid-template-columns:190px minmax(0,1fr);gap:10px;padding:10px;border-radius:calc(var(--radius) * 1.2);background:var(--amz,var(--primary));color:var(--amz-ink,#fff);isolation:isolate;overflow:hidden}
+.amz::before{content:"";position:absolute;inset:0;z-index:-1;background-image:var(--pattern-on-primary,none);opacity:.14}
+.amz::after{content:"";position:absolute;z-index:-1;width:340px;height:340px;border-radius:50%;inset-inline-start:-120px;bottom:-200px;background:radial-gradient(closest-side,rgba(255,255,255,.22),transparent)}
+.amz-head{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:14px 6px}
+.amz-badge{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--amz-ink,#fff);color:var(--amz,var(--primary));box-shadow:0 0 0 8px rgba(255,255,255,.14);animation:amzPulse 2.4s ease-in-out infinite}
+.amz-badge .icon{width:32px;height:32px;stroke-width:2.2}
+@keyframes amzPulse{50%{box-shadow:0 0 0 14px rgba(255,255,255,.06)}}
+.amz-title{font-family:var(--font-display);font-size:1.75rem;line-height:1.15;font-weight:900;display:flex;flex-direction:column}
+.amz-title small{font-size:.95rem;font-weight:700;opacity:.85;font-family:var(--font-body)}
+.countdown--amz{gap:4px;align-items:center}
+.countdown--amz .countdown-grid{gap:4px;align-items:center;direction:ltr}
+.countdown--amz .countdown-grid i{font-style:normal;font-weight:900;opacity:.8}
+.countdown--amz .cd-box{min-width:36px;padding:4px 2px;border:0;border-radius:8px;background:var(--amz-ink,#fff);color:var(--amz,var(--primary))}
+.countdown--amz .cd-box b{font-size:1.05rem}
+.countdown--amz .countdown-ended{color:inherit;font-size:.82rem}
+.amz-more{display:inline-flex;align-items:center;gap:4px;font-size:.86rem;font-weight:800;padding:4px 10px;border-radius:99px;transition:background .25s}
+.amz-more:hover{background:rgba(255,255,255,.14)}
+.amz-more .icon{width:1em;height:1em}
+.amz-body{position:relative;min-width:0}
+.amz-track{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 8px)/5);gap:2px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;border-radius:calc(var(--radius) * .9);overscroll-behavior-x:contain}
+.amz-track::-webkit-scrollbar{display:none}
+.amz-card{position:relative;scroll-snap-align:start;display:flex;flex-direction:column;gap:6px;padding:12px 12px 14px;background:#fff;color:#1f2026;min-width:0}
+.amz-media{display:block;aspect-ratio:1;border-radius:10px;overflow:hidden;background:#f6f6f6}
+.amz-media img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
+.amz-card:hover .amz-media img{transform:scale(1.06)}
+.amz-name{font-size:.84rem;font-weight:700;line-height:1.6;height:3.2em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-top:4px}
+.amz-price{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.amz-off{flex:none;background:#e0193a;color:#fff;font-size:.78rem;font-weight:900;padding:1px 8px;border-radius:99px;line-height:1.7}
+.amz-price b{font-size:1rem;font-weight:900;white-space:nowrap}
+.amz-price small{font-size:.66rem;font-weight:600;margin-inline-start:3px;color:#62666d}
+.amz-old{align-self:flex-end;font-size:.78rem;color:#a1a3a8}
+.amz-sold{font-size:.72rem;color:#62666d;display:grid;gap:3px}
+.amz-sold .sold-bar{height:4px;background:#eceff1;margin:0}
+.amz-sold .sold-bar span{background:#e0193a}
+.amz-add{position:absolute;top:18px;inset-inline-end:18px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#1f2026;box-shadow:0 6px 16px -6px rgba(0,0,0,.35);opacity:0;transform:scale(.8);transition:opacity .25s,transform .25s var(--ease),background .25s}
+.amz-card:hover .amz-add,.amz-add:focus-visible{opacity:1;transform:none}
+.amz-add:hover{background:#e0193a;color:#fff}
+.amz-add .icon{width:18px;height:18px}
+.amz-all{align-items:center;justify-content:center;text-align:center;gap:10px;color:#1f2026}
+.amz-all-ic{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;border:1.5px solid #19bfd3;color:#19bfd3;transition:transform .3s var(--ease)}
+.amz-all-ic .icon{transform:scaleX(-1)}
+.amz-all:hover .amz-all-ic{transform:translateX(-6px)}
+.amz-all b{font-size:.95rem}
+.amz-all span{font-size:.76rem;color:#62666d}
+.amz-nav{position:absolute;top:50%;width:40px;height:40px;margin-top:-20px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#1f2026;box-shadow:0 6px 18px -6px rgba(0,0,0,.4);transition:opacity .25s,transform .25s;z-index:2}
+.amz-nav--prev{inset-inline-start:8px}.amz-nav--next{inset-inline-end:8px}
+.amz-nav:hover{transform:scale(1.08)}
+.amz-nav[disabled]{opacity:0;pointer-events:none}
+@media (max-width:1100px){.amz-track{grid-auto-columns:calc((100% - 6px)/4)}}
+@media (max-width:860px){.amz{grid-template-columns:1fr}.amz-head{flex-direction:row;flex-wrap:wrap;justify-content:space-between;padding:6px 8px;text-align:start}.amz-badge{width:44px;height:44px;box-shadow:none}.amz-badge .icon{width:24px;height:24px}.amz-title{font-size:1.3rem;flex-direction:row;gap:6px;align-items:baseline;margin-inline-end:auto}.amz-title small{font-size:1.3rem;font-family:var(--font-display);font-weight:900;opacity:1}.amz-track{grid-auto-columns:calc((100% - 4px)/3)}.amz-nav{display:none}}
+@media (max-width:560px){.amz-track{grid-auto-columns:46%}.amz-more{display:none}.amz-add{opacity:1;transform:none;top:16px;inset-inline-end:16px;width:30px;height:30px}}
+
+/* ---------- لایه‌ی تیره (معکوس) برای یک سکشن ---------- */
+.section--ink{--bg:var(--ink-bg);--surface:color-mix(in srgb,#fff 7%,var(--ink-bg));--surface2:color-mix(in srgb,#fff 13%,var(--ink-bg));--text:#f7f5f1;--muted:rgba(247,245,241,.7);--line:rgba(255,255,255,.14);background:var(--bg);color:var(--text)}
+.section--ink .eyebrow,.section--ink .eyebrow-deco{color:color-mix(in srgb,var(--accent) 70%,#fff)}
+.section--ink .feature-icon{background:rgba(255,255,255,.1);color:#fff}
+.section--ink .btn--ghost{border-color:rgba(255,255,255,.3);color:#fff}
+.section--ink .price-now,.section--ink .stat b{color:#fff!important}
+.section--ink .review,.section--ink .faq-item,.section--ink .bundle,.section--ink .brow,.section--ink .stat{background:var(--surface)!important;border-color:var(--line)!important;box-shadow:none!important;color:var(--text)}
+.section--ink .faq-contact{background:var(--surface)}
+.section--ink .about-media img{box-shadow:none}
+
+/* ---------- مزایا: نوار ---------- */
+.features--strip .features{gap:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.features--strip .feature{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;flex-direction:row!important;align-items:center!important;text-align:start!important;padding:22px 24px!important;position:relative}
+.features--strip .feature+.feature::before{content:"";position:absolute;inset-block:22%;inset-inline-start:0;width:1px;background:var(--line)}
+.features--strip .feature-icon{width:48px!important;height:48px!important;flex:none}
+@media (max-width:1024px){.features--strip .feature:nth-child(3)::before{display:none}.features--strip .feature:nth-child(n+3){border-top:1px solid var(--line)!important}}
+@media (max-width:560px){.features--strip .feature::before{display:none}.features--strip .feature+.feature{border-top:1px solid var(--line)!important}}
+
+/* ---------- مزایا: آیکون بزرگ ---------- */
+.features--big .features{gap:clamp(18px,3vw,40px)}
+.features--big .feature{flex-direction:column!important;align-items:center!important;text-align:center!important;background:transparent!important;border:0!important;box-shadow:none!important;padding:8px!important;gap:12px}
+.features--big .feature-icon{position:relative;width:84px!important;height:84px!important;border-radius:50%!important;background:color-mix(in srgb,var(--primary) 12%,var(--bg))!important;color:var(--primary)!important;border:0!important;transition:transform .4s var(--ease)}
+.mode-dark .features--big .feature-icon{color:var(--accent)!important}
+.features--big .feature-icon::after{content:"";position:absolute;inset:-7px;border-radius:50%;border:1.5px dashed color-mix(in srgb,var(--primary) 40%,transparent);animation:spin 26s linear infinite}
+.features--big .feature-icon .icon{width:34px;height:34px}
+.features--big .feature-icon i{position:absolute;top:-2px;inset-inline-end:-2px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:.78rem;font-weight:900;background:var(--primary);color:var(--primary-ink);box-shadow:0 0 0 3px var(--bg)}
+.features--big .feature:hover .feature-icon{transform:translateY(-6px)}
+.features--big h3{font-size:1.05rem}
+.features--big p{font-size:.88rem;color:var(--muted);max-width:240px}
+
+/* ---------- مزایا: کپسول‌های بزرگ ---------- */
+.fpills{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.fpill{position:relative;min-height:170px;border-radius:999px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;padding:22px 26px;background:var(--surface);border:1px solid var(--line);transition:transform .45s cubic-bezier(.2,.8,.2,1),box-shadow .45s;overflow:hidden}
+.fpill:hover{transform:scale(1.03)}
+.fpill-ic{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--bg);color:var(--primary);margin-bottom:4px}
+.fpill b{font-family:var(--font-display);font-size:1.12rem;line-height:1.4}
+.fpill-tx{font-size:.8rem;color:var(--muted);line-height:1.6;max-width:220px}
+.fpill--2{background:linear-gradient(135deg,var(--primary),color-mix(in srgb,var(--primary) 55%,var(--accent)));color:var(--primary-ink);border-color:transparent;box-shadow:0 20px 40px -24px var(--primary)}
+.fpill--2 .fpill-tx{color:inherit;opacity:.85}
+.fpill--2 .fpill-ic{background:rgba(255,255,255,.18);color:inherit}
+.fpill--3{background:var(--text);color:var(--bg);border-color:transparent}
+.fpill--3 .fpill-tx{color:inherit;opacity:.7}
+.fpill--3 .fpill-ic{background:rgba(127,127,127,.25);color:inherit}
+.fpill--4{background:transparent;border-style:dashed}
+.mode-dark .fpill-ic{color:var(--accent)}
+@media (max-width:1024px){.fpills{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.fpills{grid-template-columns:1fr}.fpill{min-height:0;border-radius:28px;flex-direction:row;text-align:start;justify-content:flex-start;flex-wrap:wrap;padding:16px 20px}.fpill-ic{margin:0}.fpill-tx{flex-basis:100%;max-width:none}}
+
+/* ---------- سوالات: وسط‌چین ---------- */
+.faq-center .faq{max-width:840px;margin-inline:auto}
+.faq-center .faq-contacts{max-width:1040px;margin:clamp(28px,4vw,44px) auto 0;grid-template-columns:repeat(4,1fr)}
+@media (max-width:1000px){.faq-center .faq-contacts{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.faq-center .faq-contacts{grid-template-columns:1fr}}
+/* ---------- سوالات: دو ستونه ---------- */
+.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+.faq-grid .faq{display:grid;gap:12px}
+.faq-n{flex:none;font-family:var(--font-display);font-size:1.15rem;font-weight:800;color:var(--primary);opacity:.55;min-width:2ch}
+.mode-dark .faq-n{color:var(--accent)}
+.faq-qt{flex:1}
+.faq-grid+.faq-contacts{margin:clamp(24px,3vw,36px) 0 0;grid-template-columns:repeat(4,1fr)}
+@media (max-width:900px){.faq-grid{grid-template-columns:1fr}.faq-grid+.faq-contacts{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.faq-grid+.faq-contacts{grid-template-columns:1fr}}
+
+/* ---------- پکیج‌ها: جدول قیمت ---------- */
+.bundles--table{display:grid;grid-template-columns:repeat(3,1fr);gap:0;align-items:center;max-width:1080px;margin-inline:auto}
+.tier{position:relative;display:flex;flex-direction:column;gap:12px;padding:30px 28px;background:var(--bg);border:1px solid var(--line);text-align:center;align-items:center}
+.tier:first-child{border-start-start-radius:var(--radius);border-end-start-radius:var(--radius);border-inline-end:0}
+.tier:last-child{border-start-end-radius:var(--radius);border-end-end-radius:var(--radius);border-inline-start:0}
+.tier--hot{z-index:1;padding-block:44px;border-radius:var(--radius)!important;border:0;background:var(--primary);color:var(--primary-ink);box-shadow:0 30px 60px -30px var(--primary)}
+.tier-tag{position:absolute;top:14px;inset-inline:0;margin:auto;width:max-content;display:inline-flex;gap:.35em;align-items:center;font-size:.76rem;font-weight:800;padding:2px 12px;border-radius:99px;background:var(--accent);color:#fff}
+.tier-tag .icon{width:1em;height:1em}
+.tier-top{display:flex;flex-direction:column;align-items:center;gap:8px}
+.tier-img{width:84px;height:84px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 4px var(--surface)}
+.tier--hot .tier-img{box-shadow:0 0 0 4px rgba(255,255,255,.25)}
+.tier-img img{width:100%;height:100%;object-fit:cover}
+.tier h3{font-family:var(--font-display);font-size:1.3rem}
+.tier-n{font-size:.78rem;color:var(--muted)}
+.tier .price{justify-content:center;flex-wrap:wrap}
+.tier .price-now{font-size:1.5rem}
+.tier--hot .price-now,.tier--hot .price-old,.tier--hot .tier-n,.tier--hot li{color:inherit}
+.tier--hot .price-old{opacity:.7}
+.tier ul{display:grid;gap:8px;width:100%;padding-top:14px;border-top:1px dashed var(--line);text-align:start;font-size:.9rem;margin-bottom:6px}
+.tier--hot ul{border-color:rgba(255,255,255,.3)}
+.tier li{display:flex;gap:8px;align-items:flex-start}
+.tier li .icon{color:var(--primary);margin-top:5px;flex:none;width:1em;height:1em}
+.tier--hot li .icon{color:inherit}
+.tier--hot .bundle-save{background:rgba(255,255,255,.18);color:inherit}
+.tier--hot .btn--primary{background:var(--primary-ink);color:var(--primary)}
+.tier .btn{margin-top:auto}
+@media (max-width:900px){.bundles--table{grid-template-columns:1fr;max-width:480px;gap:16px}.tier{border-radius:var(--radius)!important;border:1px solid var(--line)!important}.tier--hot{border:0!important}}
+
+/* ---------- پکیج‌ها: ردیفی ---------- */
+.bundles--rows{display:grid;gap:18px}
+.brow{display:grid;grid-template-columns:260px 1fr 260px;align-items:stretch;border-radius:var(--radius);background:var(--bg);border:1px solid var(--line);overflow:hidden;transition:transform .35s var(--ease),box-shadow .35s}
+.brow:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.brow--hot{border-color:var(--primary);box-shadow:0 0 0 1px var(--primary)}
+.brow-media{position:relative;min-height:190px}
+.brow-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.brow-media .bundle-tag{position:absolute;top:12px;inset-inline-start:12px}
+.brow-body{padding:22px 26px;display:flex;flex-direction:column;justify-content:center;gap:8px}
+.brow-n{font-size:.78rem;font-weight:800;color:var(--accent)}
+.brow-body h3{font-family:var(--font-display);font-size:1.35rem}
+.brow-body ul{display:flex;flex-wrap:wrap;gap:6px}
+.brow-body li{display:inline-flex;align-items:center;gap:5px;font-size:.82rem;padding:3px 10px;border-radius:99px;background:var(--surface);border:1px solid var(--line)}
+.brow-body li .icon{width:.95em;height:.95em;color:var(--primary)}
+.mode-dark .brow-body li .icon{color:var(--accent)}
+.brow-buy{padding:22px;display:flex;flex-direction:column;justify-content:center;gap:10px;border-inline-start:1px dashed var(--line);background:color-mix(in srgb,var(--surface) 60%,var(--bg))}
+.brow-buy .price{flex-wrap:wrap}
+.brow-buy .bundle-save{align-self:flex-start}
+@media (max-width:960px){.brow{grid-template-columns:200px 1fr}.brow-buy{grid-column:1/-1;flex-direction:row;flex-wrap:wrap;align-items:center;border-inline-start:0;border-top:1px dashed var(--line)}.brow-buy .btn{width:auto;margin-inline-start:auto}}
+@media (max-width:560px){.brow{grid-template-columns:1fr}.brow-media{min-height:180px}.brow-buy .btn{width:100%}}
+
+/* ---------- درباره‌ی ما: تصویر تمام‌عرض ---------- */
+.about-cover{position:relative;border-radius:calc(var(--radius) * 1.4);overflow:hidden;min-height:clamp(440px,52vw,600px);display:grid;align-content:end;color:#fff;isolation:isolate}
+.about-cover-media{position:absolute;inset:-8% 0;z-index:-2}
+.about-cover-media img{width:100%;height:100%;object-fit:cover}
+.about-cover::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,rgba(10,8,8,.88) 10%,rgba(10,8,8,.5) 50%,rgba(10,8,8,.05))}
+.about-cover-body{padding:clamp(24px,5vw,56px);padding-bottom:20px;max-width:720px}
+.about-cover-body .eyebrow{color:#fff;opacity:.85}
+.about-cover-body h2{font-family:var(--font-display);font-size:clamp(1.8rem,4vw,3rem);line-height:1.25;margin:10px 0 12px}
+.about-cover-body p{opacity:.85}
+.about-cover .stats{padding:0 clamp(24px,5vw,56px) clamp(24px,5vw,48px);max-width:720px}
+.about-cover .stat{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.about-cover .stat b{color:#fff!important}
+.about-cover .stat span{color:rgba(255,255,255,.75)}
+
+/* ---------- درباره‌ی ما: بیانیه ---------- */
+.statement{display:grid;gap:clamp(18px,3vw,28px)}
+.statement-title{font-family:var(--font-display);font-size:clamp(1.9rem,4.4vw,3.4rem);line-height:1.25;max-width:20ch}
+.statement-text{font-size:clamp(1.15rem,2.2vw,1.6rem);line-height:1.8;font-weight:600;max-width:1000px}
+.statement-text>span,.statement-text .ws>span{color:var(--muted)}
+.statement-row{display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(24px,5vw,64px);align-items:end;padding-top:clamp(18px,3vw,32px);border-top:1px solid var(--line)}
+.stats--line{grid-template-columns:repeat(3,1fr);gap:0}
+.stats--line .stat{background:none;border:0;border-radius:0;text-align:start;padding:6px 18px}
+.stats--line .stat+.stat{border-inline-start:1px solid var(--line)}
+.stats--line .stat b{font-size:clamp(2rem,4.6vw,3.4rem);font-family:var(--font-display);line-height:1.1}
+.st-imgs{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:end}
+.st-img{margin:0;border-radius:var(--radius);overflow:hidden;aspect-ratio:3/4}
+.st-img--2{aspect-ratio:1;transform:translateY(-30px)}
+.st-img img{width:100%;height:100%;object-fit:cover}
+@media (max-width:860px){.statement-row{grid-template-columns:1fr}.st-img--2{transform:none}}
+@media (max-width:480px){.stats--line .stat{padding-inline:10px}}
+
+/* ---------- خبرنامه: دو بخشی ---------- */
+.news-split{display:grid;grid-template-columns:1fr 1.1fr;border-radius:calc(var(--radius) * 1.3);overflow:hidden;background:var(--surface);border:1px solid var(--line)}
+.news-split-media{position:relative;min-height:320px}
+.news-split-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.news-code{position:absolute;bottom:18px;inset-inline-start:18px;display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:12px;background:var(--bg);color:var(--text);font-weight:800;box-shadow:var(--shadow);border:1.5px dashed var(--primary)}
+.news-code .icon{color:var(--primary)}
+.news-split-body{padding:clamp(26px,5vw,56px);display:flex;flex-direction:column;justify-content:center;gap:12px}
+.news-split-body h2{font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2.3rem)}
+.news-split-body p{color:var(--muted)}
+.news-split .news-form,.news-strip .news-form{background:var(--bg);border-color:var(--line)}
+.news-split .news-form .btn,.news-strip .news-form .btn{background:var(--primary);color:var(--primary-ink)}
+.news-split .news-form input::placeholder,.news-strip .news-form input::placeholder{color:var(--muted)}
+.news-perks{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.85rem;color:var(--muted)}
+.news-perks li{display:flex;align-items:center;gap:6px}
+.news-perks .icon{color:var(--primary);width:1em;height:1em}
+@media (max-width:860px){.news-split{grid-template-columns:1fr}.news-split-media{min-height:220px}}
+/* ---------- خبرنامه: نوار باریک ---------- */
+.section--tight{padding-block:calc(var(--section) * .55)}
+.news-strip{display:grid;grid-template-columns:auto 1fr minmax(280px,420px);align-items:center;gap:22px;padding:22px 26px;border-radius:var(--radius);border:1px solid var(--line);background:linear-gradient(90deg,color-mix(in srgb,var(--primary) 9%,var(--bg)),var(--surface))}
+.news-strip-ic{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:var(--primary);color:var(--primary-ink)}
+.news-strip-ic .icon{width:26px;height:26px}
+.news-strip h2{font-family:var(--font-display);font-size:1.3rem}
+.news-strip p{font-size:.9rem;color:var(--muted)}
+.news-strip .news-msg{margin-top:6px}
+@media (max-width:900px){.news-strip{grid-template-columns:auto 1fr}.news-strip-form{grid-column:1/-1}}
+/* ---------- خبرنامه: بلوک تمام‌عرض ---------- */
+.section--pinned{position:relative;overflow:hidden;background:var(--footer-bg,#111);color:#fff;padding-block:clamp(80px,12vw,150px);isolation:isolate}
+.section--pinned::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 70% at 50% 100%,color-mix(in srgb,var(--primary) 40%,transparent),transparent 70%)}
+.pinned-ghost{position:absolute;inset:0;z-index:-1;display:flex;flex-direction:column;justify-content:center;gap:0;pointer-events:none;user-select:none;overflow:hidden}
+.pinned-ghost span{display:block;white-space:nowrap;font-family:var(--font-display);font-weight:900;font-size:clamp(5rem,16vw,15rem);line-height:1;color:rgba(255,255,255,.05);text-align:center;will-change:transform}
+.pinned{max-width:760px;margin-inline:auto;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px}
+.pinned .eyebrow{color:color-mix(in srgb,var(--accent) 70%,#fff)}
+.pinned-title{font-family:var(--font-display);font-size:clamp(2.2rem,6vw,4.4rem);line-height:1.2}
+.pinned-title em{font-style:normal;color:color-mix(in srgb,var(--accent) 80%,#fff)}
+.pinned p{opacity:.78;max-width:540px}
+.pinned-form{width:min(100%,520px);margin-top:8px}
+.pinned .news-form .btn{background:var(--primary);color:var(--primary-ink)}
+.pinned .news-msg{color:#fff}
+
+/* ---------- فوتر: وسط‌چین ---------- */
+.footer--center{text-align:center}
+.fc-top{display:flex;flex-direction:column;align-items:center;gap:6px;padding-bottom:28px}
+.fc-top .footer-about{margin:8px auto 14px;max-width:560px}
+.fc-links{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 28px;padding-block:22px;border-block:1px solid rgba(255,255,255,.12);font-weight:700;font-size:.95rem}
+.fc-links a{opacity:.85;transition:opacity .2s}
+.fc-links a:hover{opacity:1}
+.fc-contact{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 28px;padding-block:24px;font-size:.88rem;opacity:.8}
+.fc-contact li{display:flex;align-items:center;gap:8px}
+.fc-contact .icon{opacity:.7}
+.footer--center .footer-bottom{text-align:start}
+/* ---------- فوتر: بزرگ با نام برند ---------- */
+.fb-cta{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;padding-bottom:clamp(32px,5vw,52px);border-bottom:1px solid rgba(255,255,255,.12)}
+.fb-cta h2{font-family:var(--font-display);font-size:clamp(1.8rem,4.4vw,3.2rem);line-height:1.3;max-width:24ch}
+.fb-cta h2 em{font-style:normal;color:color-mix(in srgb,var(--accent) 75%,#fff)}
+.fb-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.3fr;gap:32px;padding-block:clamp(32px,5vw,52px)}
+.fb-brand .footer-about{margin:14px 0 18px}
+@media (max-width:960px){.fb-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:480px){.fb-grid{grid-template-columns:1fr}}
+.fb-word{display:flex;justify-content:center;font-family:'Vazirmatn',sans-serif;font-weight:900;font-size:clamp(3.2rem,13vw,12.5rem);line-height:.9;letter-spacing:-.04em;color:rgba(255,255,255,.08);user-select:none;overflow:hidden;padding-block:.06em;white-space:nowrap}
+.fw-l{display:inline-block}
+.js .fb-word .fw-l{opacity:0;transform:translateX(-60%);filter:blur(12px);transition:opacity 1s cubic-bezier(.05,.9,.1,1),transform 1.1s cubic-bezier(.05,.9,.1,1),filter 1.1s cubic-bezier(.05,.9,.1,1);transition-delay:calc(var(--i) * 70ms)}
+.js .fb-word.is-in .fw-l{opacity:1;transform:none;filter:none}
+
+/* ---------- حرکت متن: آشکار شدن کلمه‌به‌کلمه از پشت ماسک ---------- */
+.ws{display:inline-block;overflow:hidden;vertical-align:top;padding:.18em .02em .24em;margin:-.18em -.02em -.24em}
+.js .ws>span{display:inline-block;transform:translateY(112%);opacity:0;transition:transform .95s cubic-bezier(.16,1,.3,1),opacity .6s ease;transition-delay:calc(var(--i,0) * 60ms + var(--d,0ms))}
+.js .is-split.is-in .ws>span{transform:none;opacity:1}
+.wf{display:inline-block}
+.js .wf{opacity:0;transform:translateY(.6em);transition:opacity .7s cubic-bezier(.165,.84,.44,1),transform .7s cubic-bezier(.165,.84,.44,1);transition-delay:calc(var(--i,0) * 22ms)}
+.js .is-words.is-in .wf{opacity:1;transform:none}
+/* هیرو تا پایان بارگذاری منتظر می‌ماند */
+.js body[data-loader]:not(.is-ready) .hero-copy>*{animation-play-state:paused}
+.js .hero-title.is-split{animation:none!important;opacity:1}
+
+/* ---------- آشکار شدن تصویر ---------- */
+.js [data-plate]{clip-path:inset(0 0 100% 0);transition:clip-path 1.4s cubic-bezier(.16,1,.3,1)}
+.js [data-plate] img{transform:scale(1.15);transition:transform 1.6s cubic-bezier(.16,1,.3,1)}
+.js [data-plate].is-in{clip-path:inset(0 0 0 0)}
+.js [data-plate].is-in img{transform:none}
+
+/* ---------- صفحه‌ی بارگذاری ---------- */
+.loader{display:none}
+.js .loader{display:flex;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;background:var(--footer-bg,#111);color:#fff;transition:transform .8s cubic-bezier(.76,0,.24,1);border-radius:0 0 28px 28px}
+.js .loader.is-out{transform:translateY(-105%)}
+.ld-in{display:flex;flex-direction:column;align-items:center;gap:22px;transition:opacity .4s,transform .4s}
+.loader.is-out .ld-in{opacity:0;transform:translateY(-14px)}
+.ld-logo{display:flex;align-items:center;gap:12px;font-family:var(--font-display);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;animation:heroIn .7s var(--ease) both}
+.ld-logo .logo-mark{width:46px;height:46px}
+.loader p{opacity:.55;font-size:.9rem;margin-top:-10px}
+.ld-bar{width:min(22rem,70vw);height:2px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden}
+.ld-bar span{display:block;height:100%;width:100%;background:var(--accent);transform-origin:right;transform:scaleX(var(--p,0))}
+.ld-row{width:min(22rem,70vw);display:flex;justify-content:space-between;font-size:.78rem;opacity:.6;margin-top:-10px}
+.ld-num{font-feature-settings:"tnum";opacity:1;font-weight:800}
+.loader--curtain{background:var(--primary);color:var(--primary-ink)}
+.loader--curtain .ld-bar span{background:currentColor}
+.loader--curtain .ld-bar{background:color-mix(in srgb,currentColor 20%,transparent)}
+
+/* ---------- افکت‌های هیرو ---------- */
+.fx-layer{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1}
+.hero{position:relative}
+.hero>.container{position:relative;z-index:2}
+.fx-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.fx-liquid{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.fx-shape{position:absolute;color:var(--primary);opacity:.55;will-change:transform}
+.mode-dark .fx-shape{color:var(--accent)}
+.fx-shape svg{width:100%;height:100%;display:block}
+.fx-bubble{position:absolute;bottom:-60px;border-radius:50%;pointer-events:none;animation:fxRise linear forwards}
+@keyframes fxRise{0%{transform:translate(0,0) scale(.8);opacity:0}12%{opacity:var(--o,.5)}85%{opacity:var(--o,.5)}100%{transform:translate(var(--dx,30px),-110vh) scale(1.1);opacity:0}}
+.fx-bubbles .fx-bubble{border:1.5px solid rgba(255,255,255,.75);background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.7),rgba(255,255,255,.08) 40%,transparent 62%)}
+.fx-embers .fx-bubble{background:radial-gradient(circle,#ffd48a,#ff9a3c 45%,transparent 70%);filter:blur(.4px)}
+.fx-steam .fx-bubble{background:radial-gradient(circle,rgba(255,255,255,.55),transparent 65%);filter:blur(6px)}
+/* نشانگر سفارشی */
+.fx-cursor{position:fixed;top:0;left:0;z-index:900;pointer-events:none;opacity:0;transition:opacity .35s}
+.fx-cursor.is-on{opacity:1}
+.fx-ring{width:42px;height:42px;margin:-21px 0 0 -21px;border-radius:50%;border:1.5px solid color-mix(in srgb,var(--text) 45%,transparent);transition:width .3s,height .3s,margin .3s,border-color .3s,background .3s}
+.fx-ring.is-big{width:70px;height:70px;margin:-35px 0 0 -35px;border-color:color-mix(in srgb,var(--text) 20%,transparent);background:color-mix(in srgb,var(--primary) 8%,transparent)}
+.fx-pill{padding:.55rem 1.1rem;border-radius:99px;font-size:.8rem;font-weight:800;white-space:nowrap;background:color-mix(in srgb,var(--bg) 55%,transparent);color:var(--text);border:1px solid color-mix(in srgb,var(--text) 15%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 10px 30px -14px rgba(0,0,0,.35);transform:translate(-50%,-50%) scale(0)}
+.fx-pill b{color:var(--accent)}
+/* شیب سه‌بعدی */
+.hero[data-fx="tilt"] .dash{transform-style:preserve-3d;transition:transform .2s ease-out;will-change:transform}
+.hero[data-fx="tilt"] .dash .float-card{transform:translateZ(40px)}
+/* دکمه‌های مغناطیسی */
+.btn.is-mag{transition:transform .25s cubic-bezier(.2,.8,.2,1),background .25s,color .25s,box-shadow .25s}
+
+@media (prefers-reduced-motion:reduce){
+  .js .ws>span,.js .wf,.js .fb-word .fw-l{transform:none!important;opacity:1!important;filter:none!important;transition:none!important}
+  .js [data-plate]{clip-path:none!important}.js [data-plate] img{transform:none!important}
+  .fx-layer,.fx-cursor{display:none!important}
+  .js .loader{display:none}
+  .amz-badge,.features--big .feature-icon::after{animation:none}
+}
+@media (hover:none),(max-width:860px){.fx-cursor{display:none}}
+.fx-steam,.fx-embers{z-index:3}
+.hero--cover .hero-bg,.hero--wave .hero-bg{top:-5%;bottom:-5%;height:auto}
+.pinned-ghost{align-items:center}
+.statement-title,.pinned-title,.fb-cta h2,.section-title{text-wrap:balance}
+.statement-title{max-width:28ch}

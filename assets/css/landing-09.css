@@ -20,6 +20,9 @@
   --footer-bg:color-mix(in srgb,var(--text) 92%,#000);
   --footer-ink:#ece8e4;
   --pattern-on-primary:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='24'><path d='M0 12q10-10 20 0t20 0 20 0 20 0' fill='none' stroke='%23ffffff' stroke-width='1.5'/></svg>");
+  --ink-bg:#06324a;
+  --amz:#0077b6;
+  --amz-ink:#ffffff;
 }
 .section--pattern{background-color:var(--surface)}
 .section--pattern::before{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='24'><path d='M0 12q10-10 20 0t20 0 20 0 20 0' fill='none' stroke='%230077b6' stroke-width='1.5'/></svg>");opacity:0.12;-webkit-mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);pointer-events:none}

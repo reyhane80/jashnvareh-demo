@@ -20,6 +20,9 @@
   --footer-bg:color-mix(in srgb,var(--text) 92%,#000);
   --footer-ink:#ece8e4;
   --pattern-on-primary:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><circle cx='3' cy='3' r='1.6' fill='%23ffffff'/></svg>");
+  --ink-bg:#16134a;
+  --amz:#4f46e5;
+  --amz-ink:#ffffff;
 }
 .section--pattern{background-color:var(--surface)}
 .section--pattern::before{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><circle cx='3' cy='3' r='1.6' fill='%234f46e5'/></svg>");opacity:0.12;-webkit-mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);pointer-events:none}

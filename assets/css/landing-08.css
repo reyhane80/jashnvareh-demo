@@ -20,6 +20,9 @@
   --footer-bg:#1d3557;
   --footer-ink:#ece8e4;
   --pattern-on-primary:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90'><g fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round'><path d='M10 20q8-10 16 0t16 0'/><circle cx='68' cy='18' r='6'/><path d='M20 64l8 8m0-8-8 8'/><path d='M60 60l10 14 10-14z'/></g></svg>");
+  --ink-bg:#1d3557;
+  --amz:#e63946;
+  --amz-ink:#ffffff;
 }
 .section--pattern{background-color:var(--surface)}
 .section--pattern::before{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90'><g fill='none' stroke='%23e63946' stroke-width='2' stroke-linecap='round'><path d='M10 20q8-10 16 0t16 0'/><circle cx='68' cy='18' r='6'/><path d='M20 64l8 8m0-8-8 8'/><path d='M60 60l10 14 10-14z'/></g></svg>");opacity:0.12;-webkit-mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);pointer-events:none}
