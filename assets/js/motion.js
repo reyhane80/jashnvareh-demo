@@ -1,5 +1,5 @@
 /*!
- * جشنواره — حرکت‌ها و افکت‌های تصویری | نسخه‌ی 1.7.1
+ * جشنواره — حرکت‌ها و افکت‌های تصویری | نسخه‌ی 1.7.2
  * بدون هیچ کتابخانه‌ی خارجی. همه‌ی بخش‌ها با «کاهش حرکت» سیستم‌عامل خاموش می‌شوند.
  *
  * فهرست:
@@ -16,6 +16,7 @@
  */
 (function () {
   'use strict';
+  window.__jReady = (window.__jReady || 0) + 1; /* اعلام آماده بودن اسکریپت */
   var doc = document, root = doc.documentElement, body = doc.body;
   var mq = function (q) { return window.matchMedia && window.matchMedia(q).matches; };
   var reduce = mq('(prefers-reduced-motion: reduce)');

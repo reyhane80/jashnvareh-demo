@@ -1,10 +1,11 @@
 /*!
- * جشنواره — صفحه‌ی انتخاب لندینگ‌ها | نسخه‌ی 1.7.1
+ * جشنواره — صفحه‌ی انتخاب لندینگ‌ها | نسخه‌ی 1.7.2
  * صفحه‌ی بارگذاری، موج WebGL، اشیای شناور گریزان، اسلایدر، نشانگر سفارشی،
  * آشکار شدن تیترها، شمارنده و فیلتر دموها — بدون هیچ کتابخانه‌ی خارجی.
  */
 (function () {
   'use strict';
+  window.__jReady = (window.__jReady || 0) + 1; /* اعلام آماده بودن اسکریپت */
   var doc = document, root = doc.documentElement, body = doc.body;
   var $ = function (s, c) { return (c || doc).querySelector(s); };
   var $$ = function (s, c) { return Array.prototype.slice.call((c || doc).querySelectorAll(s)); };

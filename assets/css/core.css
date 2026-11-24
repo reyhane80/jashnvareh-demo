@@ -1,5 +1,5 @@
 /*!
- * جشنواره — مجموعه‌ی ۱۵ لندینگ فروش ویژه | نسخه‌ی 1.7.1
+ * جشنواره — مجموعه‌ی ۱۵ لندینگ فروش ویژه | نسخه‌ی 1.7.2
  * استایل پایه‌ی مشترک همه‌ی لندینگ‌ها.
  * رنگ‌ها و فونت هر لندینگ در فایل assets/css/landing-XX.css تعریف شده‌اند.
  * تغییرات شخصی را در assets/css/custom.css بنویسید.
@@ -1525,3 +1525,8 @@ a.faq-contact:hover{border-color:color-mix(in srgb,var(--primary) 50%,transparen
 .news-msg:empty{display:none}
 .news{align-items:center}
 .news>div:last-child{align-self:center}
+
+/* ===== 1.7.2 — اگر اسکریپت‌ها با اینترنت کند دیر برسند، صفحه کامل و بدون انیمیشن نمایش داده می‌شود ===== */
+.no-anim .reveal,.no-anim .ws>span,.no-anim .wf,.no-anim .fb-word .fw-l,.no-anim [data-plate],.no-anim [data-plate] img{opacity:1!important;transform:none!important;filter:none!important;clip-path:none!important}
+.no-anim .loader{display:none!important}
+.no-anim body[data-loader] .hero-copy>*{animation-play-state:running!important}
