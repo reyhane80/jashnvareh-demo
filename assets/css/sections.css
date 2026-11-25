@@ -383,3 +383,4 @@
 .mode-dark .bn--2{border:1px solid var(--line)}
 .mode-dark .bn-float{border-color:rgba(255,255,255,.16)}
 .mode-dark .bn--1 .bn-chip{background:rgba(255,255,255,.1);color:#fff}
+[data-fx="snow"] .fx-shape{color:#fff}[data-fx="snow"] .fx-shape:nth-child(3n+2){color:#f3c56b}

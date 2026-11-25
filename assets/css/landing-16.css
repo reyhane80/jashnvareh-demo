@@ -1,0 +1,30 @@
+/*!
+ * جشنواره — لندینگ ۱۶: کریسمس: تزئینات و هدیه
+ * رنگ‌ها، فونت و جزئیات ظاهری اختصاصی این لندینگ.
+ * برای تغییر رنگ کافی است مقادیر زیر را عوض کنید.
+ */
+:root{
+  --bg:#fbf6ef;
+  --surface:#ffffff;
+  --surface2:#f3e9dc;
+  --text:#2a1a17;
+  --muted:#76625c;
+  --primary:#c8102e;
+  --primary-ink:#ffffff;
+  --accent:#1f7a4d;
+  --line:#efe2d4;
+  --radius:20px;
+  --radius-sm:min(20px,12px);
+  --btn-radius:calc(20px * .6);
+  --font-display:'Lalezar','Vazirmatn',sans-serif;
+  --footer-bg:color-mix(in srgb,var(--text) 92%,#000);
+  --footer-ink:#ece8e4;
+  --pattern-on-primary:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><circle cx='3' cy='3' r='1.6' fill='%23ffffff'/></svg>");
+  --ink-bg:#2a1a17;
+  --amz:#c8102e;
+  --amz-ink:#ffffff;
+}
+
+/* رنگ‌های مکمل نسخه‌ی ۲ */
+:root{--deep:#0f3b2a;--deep2:#17573d;--cream:#f8efe4;--blush:#fde8e6;--hi:#f3c56b;--prod-bg:#ffffff;--footer-bg:#0f3b2a}
+.hx-title{font-weight:400;line-height:1.35}.amz-w1{font-weight:400}.ab-title{font-weight:400}

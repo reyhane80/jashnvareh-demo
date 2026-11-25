@@ -9,7 +9,7 @@
  *  ۴. دکمه‌های مغناطیسی
  *  ۵. اسلایدر پیشنهاد شگفت‌انگیز
  *  ۶. افکت هیرو (section.hero[data-fx]):
- *     liquid | hearts | petals | doodles | bubbles | embers | steam | sparks | stars | shader | cursor | tilt
+ *     liquid | hearts | petals | doodles | snow | bubbles | embers | steam | sparks | stars | shader | cursor | tilt
  *
  * برای خاموش کردن افکت هیرو، ویژگی data-fx را از تگ section.hero حذف کنید.
  * برای حذف صفحه‌ی بارگذاری، ویژگی data-loader را از تگ body و div.loader را حذف کنید.
@@ -298,7 +298,10 @@
               '<circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2.6"/>',
               '<path d="M12 4 21 19H3Z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>',
               '<path d="M2 14c3-6 5-6 7 0s4 6 7 0 4-6 6 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>',
-              '<path d="M12 4v16M4 12h16" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>']
+              '<path d="M12 4v16M4 12h16" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>'],
+    snow: ['<g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7"/><path d="m9.5 3.5 2.5 2 2.5-2M9.5 20.5l2.5-2 2.5 2M4 10.2l3-.7-.9-3M20 13.8l-3 .7.9 3M4 13.8l3 .7-.9 3M20 10.2l-3-.7.9-3"/></g>',
+           '<path d="m12 3 2.4 6.1L21 9.6l-5 4.2 1.6 6.4L12 16.7l-5.6 3.5L8 13.8 3 9.6l6.6-.5Z" fill="currentColor"/>',
+           '<circle cx="12" cy="12" r="6" fill="currentColor"/>']
   };
   if (SHAPES[fx]) {
     var lay = layer('fx-repel'), items = [], seedN = 7;

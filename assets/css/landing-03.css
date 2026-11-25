@@ -27,7 +27,7 @@
 .section--pattern{background-color:var(--surface)}
 .section--pattern::before{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><path d='M44 0H0v44' fill='none' stroke='%2322e1ff' stroke-width='1'/></svg>");opacity:0.16;-webkit-mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);pointer-events:none}
 .section--pattern>.container{position:relative}
-
+.bn--1 .bn-float img{object-position:20% 50%}
 /* رنگ‌های مکمل نسخه‌ی ۲ */
 :root{--deep:#160826;--deep2:#2a0d45;--cream:#111119;--blush:#1a1226;--hi:#22e1ff;--prod-bg:#ffffff;--footer-bg:#160826}
 .hx-title{font-weight:400;line-height:1.35}.amz-w1{font-weight:400}.ab-title{font-weight:400}
