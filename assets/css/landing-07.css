@@ -4,45 +4,30 @@
  * برای تغییر رنگ کافی است مقادیر زیر را عوض کنید.
  */
 :root{
-  --bg:#f2efe8;
+  --bg:#f6f3ed;
   --surface:#ffffff;
-  --surface2:#e6e1d6;
+  --surface2:#ece5d8;
   --text:#14213a;
   --muted:#5d6678;
   --primary:#14213a;
-  --primary-ink:#f2efe8;
+  --primary-ink:#ffffff;
   --accent:#b8945a;
-  --line:rgba(20,33,58,.14);
-  --radius:2px;
-  --radius-sm:0px;
-  --btn-radius:2px;
+  --line:#e3dccf;
+  --radius:20px;
+  --radius-sm:min(20px,12px);
+  --btn-radius:calc(20px * .6);
   --font-display:'Noto Kufi Arabic','Vazirmatn',sans-serif;
   --footer-bg:#0d1626;
   --footer-ink:#ece8e4;
   --pattern-on-primary:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14'><path d='M7 0v14' stroke='%23ffffff' stroke-width='1'/></svg>");
   --ink-bg:#14213a;
   --amz:#14213a;
-  --amz-ink:#f2efe8;
+  --amz-ink:#ffffff;
 }
 .section--pattern{background-color:var(--surface)}
 .section--pattern::before{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14'><path d='M7 0v14' stroke='%2314213a' stroke-width='1'/></svg>");opacity:0.12;-webkit-mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);pointer-events:none}
 .section--pattern>.container{position:relative}
-.header{background:var(--primary);color:var(--primary-ink)}
-.header .nav a{color:rgba(242,239,232,.7)}
-.header .nav a:hover,.header .nav a.is-active{color:var(--primary-ink);background:rgba(255,255,255,.08)}
-.header .icon-btn:hover{background:rgba(255,255,255,.08)}
-.header .logo small{color:rgba(242,239,232,.6)}
-.header .logo-mark{background:var(--accent);color:var(--primary)}
-.header .icon-btn .count{border-color:var(--primary)}
-.header.is-scrolled{border-color:rgba(255,255,255,.08)}
-.topbar{background:var(--accent);color:var(--primary);font-weight:700}
-.hero-title{letter-spacing:-.01em}
-.section-title{font-weight:800}
-.btn{border-radius:2px}
-.card--line .card-media{background:#fff}
-.feature{background:transparent;border:0;border-inline-start:2px solid var(--accent);border-radius:0;padding-block:8px}
-.feature-icon{background:transparent;color:var(--accent);width:auto;height:auto}
-.news{background:var(--primary);color:var(--primary-ink);border-radius:2px}
-.news .news-form .btn{background:var(--accent);color:var(--primary)}
-.cats--banner{background:var(--surface)}
-.bundle{border-radius:2px}
+
+/* رنگ‌های مکمل نسخه‌ی ۲ */
+:root{--deep:#0f1a2e;--deep2:#1f3050;--cream:#f0ebe1;--blush:#e8eef7;--hi:#f3c56b;--prod-bg:#ffffff;--footer-bg:#0f1a2e}
+

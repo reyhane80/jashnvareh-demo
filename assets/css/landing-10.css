@@ -4,38 +4,30 @@
  * برای تغییر رنگ کافی است مقادیر زیر را عوض کنید.
  */
 :root{
-  --bg:#082629;
-  --surface:#0e3337;
-  --surface2:#134146;
+  --bg:#072226;
+  --surface:#0d3236;
+  --surface2:#103b40;
   --text:#f6efdc;
-  --muted:#a9c2bd;
+  --muted:#b9c9c4;
   --primary:#d4af37;
-  --primary-ink:#082629;
+  --primary-ink:#072226;
   --accent:#3fb8a6;
-  --line:rgba(212,175,55,.28);
-  --radius:16px;
-  --radius-sm:min(16px,12px);
-  --btn-radius:calc(16px * .6);
+  --line:rgba(212,175,55,.2);
+  --radius:20px;
+  --radius-sm:min(20px,12px);
+  --btn-radius:calc(20px * .6);
   --font-display:'Aref Ruqaa','Vazirmatn',sans-serif;
   --footer-bg:#04191b;
   --footer-ink:#ece8e4;
   --pattern-on-primary:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><g fill='%23ffffff'><path d='m16 10 1.4 3.6 3.6 1.4-3.6 1.4L16 20l-1.4-3.6L11 15l3.6-1.4Z'/><circle cx='60' cy='22' r='1.5'/><circle cx='40' cy='62' r='1.2'/><path d='m62 52 1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1Z'/></g></svg>");
-  --ink-bg:#134146;
+  --ink-bg:#103b40;
   --amz:#d4af37;
-  --amz-ink:#082629;
+  --amz-ink:#072226;
 }
 .section--pattern{background-color:var(--surface)}
 .section--pattern::before{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><g fill='%233fb8a6'><path d='m16 10 1.4 3.6 3.6 1.4-3.6 1.4L16 20l-1.4-3.6L11 15l3.6-1.4Z'/><circle cx='60' cy='22' r='1.5'/><circle cx='40' cy='62' r='1.2'/><path d='m62 52 1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1Z'/></g></svg>");opacity:0.16;-webkit-mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);pointer-events:none}
 .section--pattern>.container{position:relative}
-.hero--arch-dark{background:radial-gradient(50% 60% at 75% 40%,rgba(212,175,55,.14),transparent 70%)}
-.hero-title,.section-title,.featured-body h2,.about-body h2,.faq-aside h2,.bundle h3,.banner h3,.news h2{font-weight:700}
-.header{background:rgba(8,38,41,.85)}
-.topbar{background:var(--primary);color:var(--bg);font-weight:700}
-.card--gold .card-media{background:#fff}
-.feature{background:transparent;border-color:var(--line);text-align:center;flex-direction:column;align-items:center}
-.feature-icon{border-radius:999px 999px 12px 12px;background:transparent;border:1px solid var(--primary);color:var(--primary)}
-.news{background:linear-gradient(135deg,#0e3337,#134146);color:var(--text);border:1px solid var(--line)}
-.news .news-form{background:rgba(255,255,255,.06);border-color:var(--line)}
-.news .news-form .btn{background:var(--primary);color:var(--bg)}
-.stat b,.price-now{color:var(--primary)!important}
-.cats--arches .cat-name{color:var(--primary)}
+
+/* رنگ‌های مکمل نسخه‌ی ۲ */
+:root{--deep:#041719;--deep2:#0a2e33;--cream:#0b2c30;--blush:#123a3f;--hi:#e8c75a;--prod-bg:#ffffff;--footer-bg:#041719}
+

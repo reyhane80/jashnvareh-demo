@@ -4,18 +4,18 @@
  * برای تغییر رنگ کافی است مقادیر زیر را عوض کنید.
  */
 :root{
-  --bg:#fff4f6;
+  --bg:#fff7f8;
   --surface:#ffffff;
-  --surface2:#ffe3e9;
+  --surface2:#fde6eb;
   --text:#4a0d22;
-  --muted:#9a5f70;
+  --muted:#86566a;
   --primary:#e0306a;
   --primary-ink:#ffffff;
-  --accent:#6b0f2a;
-  --line:rgba(224,48,106,.16);
-  --radius:24px;
-  --radius-sm:min(24px,12px);
-  --btn-radius:calc(24px * .6);
+  --accent:#c9973f;
+  --line:#f6d9e1;
+  --radius:20px;
+  --radius-sm:min(20px,12px);
+  --btn-radius:calc(20px * .6);
   --font-display:'Jomhuria','Vazirmatn',sans-serif;
   --footer-bg:color-mix(in srgb,var(--text) 92%,#000);
   --footer-ink:#ece8e4;
@@ -27,14 +27,7 @@
 .section--pattern{background-color:var(--surface)}
 .section--pattern::before{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path fill='%23e0306a' d='M16 24s-7-4.2-7-9.2A3.8 3.8 0 0 1 16 12.6a3.8 3.8 0 0 1 7 2.2c0 5-7 9.2-7 9.2Zm32 30s-5-3-5-6.6a2.7 2.7 0 0 1 5-1.6 2.7 2.7 0 0 1 5 1.6c0 3.6-5 6.6-5 6.6Z'/></svg>");opacity:0.12;-webkit-mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);pointer-events:none}
 .section--pattern>.container{position:relative}
-.hero-title{color:var(--accent)}
-.hero-title em{color:var(--primary)}
-.section-title,.featured-body h2,.about-body h2,.faq-aside h2,.news h2{font-weight:400;font-size:clamp(2.4rem,5.4vw,3.8rem);line-height:1.1}
-.bundle h3,.banner h3{font-weight:400;font-size:2.1rem;line-height:1.1}
-.card--soft{background:#fff;border:1px solid var(--line)}
-.card--soft .card-media{background:#fff}
-.hero--mosaic{background:radial-gradient(60% 60% at 80% 20%,#ffd6e0,transparent 70%)}
-.cats--circles .cat-media{box-shadow:0 0 0 2px var(--primary),0 0 0 8px #ffe3e9}
-.news{background:linear-gradient(135deg,var(--accent),var(--primary))}
-.feature{background:#fff}
-.feature-icon{border-radius:50%}
+
+/* رنگ‌های مکمل نسخه‌ی ۲ */
+:root{--deep:#4a0d22;--deep2:#7a1438;--cream:#fdeef1;--blush:#fff0e4;--hi:#ffc2d4;--prod-bg:#ffffff;--footer-bg:#4a0d22}
+.hx-title{font-size:clamp(3.6rem,7.6vw,6rem);line-height:1.12}.amz-w1{font-size:3.4rem;line-height:.9}.ab-title{font-size:clamp(2.8rem,5.4vw,4.2rem);line-height:1.15}

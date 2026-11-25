@@ -4,18 +4,18 @@
  * برای تغییر رنگ کافی است مقادیر زیر را عوض کنید.
  */
 :root{
-  --bg:#eef8fb;
+  --bg:#f2f9fc;
   --surface:#ffffff;
-  --surface2:#d8eff6;
+  --surface2:#ddf0f7;
   --text:#06324a;
-  --muted:#4f7186;
+  --muted:#4e6f80;
   --primary:#0077b6;
   --primary-ink:#ffffff;
   --accent:#ff7b54;
-  --line:rgba(0,119,182,.16);
-  --radius:22px;
-  --radius-sm:min(22px,12px);
-  --btn-radius:calc(22px * .6);
+  --line:#d3e9f1;
+  --radius:20px;
+  --radius-sm:min(20px,12px);
+  --btn-radius:calc(20px * .6);
   --font-display:'El Messiri','Vazirmatn',sans-serif;
   --footer-bg:color-mix(in srgb,var(--text) 92%,#000);
   --footer-ink:#ece8e4;
@@ -27,13 +27,7 @@
 .section--pattern{background-color:var(--surface)}
 .section--pattern::before{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='24'><path d='M0 12q10-10 20 0t20 0 20 0 20 0' fill='none' stroke='%230077b6' stroke-width='1.5'/></svg>");opacity:0.12;-webkit-mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);pointer-events:none}
 .section--pattern>.container{position:relative}
-.hero-title,.section-title,.featured-body h2,.about-body h2,.faq-aside h2,.bundle h3,.banner h3{font-weight:700}
-.card--soft{background:#fff}
-.card--soft .card-media{background:#f3fafc}
-.cats--circles .cat-media{box-shadow:0 0 0 2px var(--accent)}
-.feature{background:#fff;border:0}
-.feature-icon{border-radius:50%;background:#fff1ea;color:var(--accent)}
-.news{background:linear-gradient(135deg,#0096c7,var(--primary) 60%,#023e8a)}
-.section--alt{background:linear-gradient(180deg,var(--bg),#d8eff6)}
-.btn--primary{background:var(--accent);color:#fff;box-shadow:0 12px 26px -14px var(--accent)}
-.filter-tab[aria-pressed="true"]{background:var(--accent);border-color:var(--accent)}
+
+/* رنگ‌های مکمل نسخه‌ی ۲ */
+:root{--deep:#06324a;--deep2:#0a4b6e;--cream:#e6f4f9;--blush:#fff0e8;--hi:#ffd166;--prod-bg:#ffffff;--footer-bg:#06324a}
+

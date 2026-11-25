@@ -4,38 +4,30 @@
  * برای تغییر رنگ کافی است مقادیر زیر را عوض کنید.
  */
 :root{
-  --bg:#f7f0e6;
-  --surface:#fffaf3;
-  --surface2:#efe3d2;
-  --text:#3a2a1c;
-  --muted:#80705f;
+  --bg:#faf4ec;
+  --surface:#ffffff;
+  --surface2:#f3e7d6;
+  --text:#33261a;
+  --muted:#7a6553;
   --primary:#a8742f;
   --primary-ink:#ffffff;
   --accent:#7b2d26;
-  --line:rgba(58,42,28,.14);
-  --radius:24px;
-  --radius-sm:12px;
-  --btn-radius:999px;
+  --line:#eadbc8;
+  --radius:20px;
+  --radius-sm:min(20px,12px);
+  --btn-radius:calc(20px * .6);
   --font-display:'Amiri','Vazirmatn',sans-serif;
   --footer-bg:color-mix(in srgb,var(--text) 92%,#000);
   --footer-ink:#ece8e4;
   --pattern-on-primary:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><path d='M0 40 40 0' stroke='%23ffffff' stroke-width='1'/></svg>");
-  --ink-bg:#3a2a1c;
+  --ink-bg:#33261a;
   --amz:#7b2d26;
   --amz-ink:#ffffff;
 }
 .section--pattern{background-color:var(--surface)}
 .section--pattern::before{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><path d='M0 40 40 0' stroke='%23a8742f' stroke-width='1'/></svg>");opacity:0.12;-webkit-mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);pointer-events:none}
 .section--pattern>.container{position:relative}
-.hero-title,.section-title,.featured-body h2,.about-body h2,.faq-aside h2,.bundle h3,.banner h3{font-weight:700}
-.hero--arch{background:radial-gradient(70% 60% at 20% 30%,#fff6e8,transparent)}
-.card--minimal .card-media{border-radius:200px 200px 20px 20px}
-.cats--tiles .cat-media{border-radius:200px 200px 16px 16px}
-.feature{background:transparent;border:0;border-top:1px solid var(--line);border-radius:0;padding-inline:0}
-.feature-icon{border-radius:50%}
-.bundle{border-radius:20px}
-.bundle-media{border-radius:200px 200px 0 0;margin:14px 14px 0;overflow:hidden}
-.news{background:var(--accent)}
-.news .news-form .btn{color:var(--accent)}
-.featured-media,.banner,.about-media img,.gallery a{border-radius:20px}
-.reviews--quote .review p{font-weight:400}
+
+/* رنگ‌های مکمل نسخه‌ی ۲ */
+:root{--deep:#3b2614;--deep2:#5a3a1f;--cream:#f6ecdf;--blush:#f7e3d9;--hi:#f3c56b;--prod-bg:#ffffff;--footer-bg:#3b2614}
+.hx-title{line-height:1.6}

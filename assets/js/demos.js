@@ -1,6 +1,6 @@
 /*!
- * جشنواره — صفحه‌ی انتخاب لندینگ‌ها | نسخه‌ی 1.7.2
- * صفحه‌ی بارگذاری، موج WebGL، اشیای شناور گریزان، اسلایدر، نشانگر سفارشی،
+ * جشنواره — صفحه‌ی انتخاب لندینگ‌ها | نسخه‌ی 1.8.0
+ * صفحه‌ی بارگذاری، موج WebGL، کارت‌های تصویری شناور، نشانگر سفارشی،
  * آشکار شدن تیترها، شمارنده و فیلتر دموها — بدون هیچ کتابخانه‌ی خارجی.
  */
 (function () {
@@ -31,20 +31,6 @@
       cards.forEach(function (card) { card.classList.toggle('is-hidden', g !== 'همه' && card.dataset.group !== g); card.classList.add('is-in'); });
     });
   });
-
-  /* ---------- ساعت و تاریخ تهران ---------- */
-  (function clock() {
-    var t = $('[data-time]'), d = $('[data-date]');
-    if (!t) return;
-    function tick() {
-      var now = new Date();
-      try {
-        t.textContent = new Intl.DateTimeFormat('fa-IR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Tehran' }).format(now);
-        d.textContent = new Intl.DateTimeFormat('fa-IR-u-ca-persian', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Tehran' }).format(now);
-      } catch (e) { t.textContent = toFa(('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2)); }
-    }
-    tick(); setInterval(tick, 1000);
-  })();
 
   /* ---------- سربرگ هنگام اسکرول ---------- */
   var head = $('.d-header');
@@ -115,23 +101,6 @@
     });
   })();
 
-  /* ---------- اسلایدر کارت هیرو ---------- */
-  (function hc() {
-    var items = $$('.hc-item'), dots = $$('.hc-dots i'), i = 0, timer;
-    if (!items.length) return;
-    function show(n) {
-      var old = items[i];
-      i = (n + items.length) % items.length;
-      old.classList.remove('is-on'); old.classList.add('is-out');
-      setTimeout(function () { old.classList.remove('is-out'); }, 500);
-      items[i].classList.add('is-on');
-      dots.forEach(function (d, k) { d.classList.toggle('is-on', k === i % dots.length); });
-    }
-    function auto() { clearInterval(timer); if (!reduce) timer = setInterval(function () { show(i + 1); }, 3800); }
-    $$('[data-hc]').forEach(function (b) { b.addEventListener('click', function () { show(i + (+b.dataset.hc)); auto(); }); });
-    dots[0].classList.add('is-on'); auto();
-  })();
-
   if (reduce) return;
 
   /* ---------- موج مایع طلایی با WebGL ---------- */
@@ -175,12 +144,12 @@
     });
   })();
 
-  /* ---------- اشیای شناور که از نشانگر فرار می‌کنند ---------- */
+  /* ---------- کارت‌های تصویری شناور هیرو (حرکت نرم و فاصله گرفتن از نشانگر) ---------- */
   (function floats() {
     var els = $$('.fl'), wrap = $('.d-floats'), hero = $('.d-hero'), vis = true;
     if (!els.length) return;
     if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { vis = e[0].isIntersecting; }).observe(hero);
-    var st = els.map(function (el, i) { return { el: el, rx: 0, ry: 0, a: (i * 37) % 30 - 15, d: +el.dataset.depth || 1, dur: [5, 7, 6, 8, 5.5, 6.5, 9, 11, 10][i % 9], ph: i * .7 }; });
+    var st = els.map(function (el, i) { return { el: el, rx: 0, ry: 0, a: 0, r0: parseFloat(getComputedStyle(el).getPropertyValue('--r')) || 0, d: +el.dataset.depth || 1, dur: [5, 7, 6, 8, 5.5, 6.5, 9, 11, 10][i % 9], ph: i * .7 }; });
     var mx = 0, my = 0;
     raf(function loop() {
       raf(loop);
@@ -191,10 +160,10 @@
       st.forEach(function (s) {
         var r = s.el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
         var dx = ptr.x - cx, dy = ptr.y - cy, dist = Math.sqrt(dx * dx + dy * dy) || 1, tx = 0, ty = 0, sp = 1;
-        if (dist < 260) { var f = (260 - dist) / 260; tx = dx / dist * f * -110; ty = dy / dist * f * -110; sp = 1 + f * 5; }
-        s.rx += (tx - s.rx) * .08; s.ry += (ty - s.ry) * .08; s.a += .05 * sp;
+        if (dist < 180) { var f = (180 - dist) / 180; tx = dx / dist * f * -36; ty = dy / dist * f * -36; sp = 1 + f * 2; }
+        s.rx += (tx - s.rx) * .06; s.ry += (ty - s.ry) * .06; s.a = 0;
         var ph = (time + s.ph) * (Math.PI * 2 / s.dur);
-        s.el.style.transform = 'translate3d(' + (s.rx + mx * 30 * s.d).toFixed(1) + 'px,' + (s.ry + my * 30 * s.d + Math.sin(ph) * 16).toFixed(1) + 'px,0) rotate(' + (s.a + Math.cos(ph) * 7).toFixed(1) + 'deg)';
+        s.el.style.transform = 'translate3d(' + (s.rx + mx * 30 * s.d).toFixed(1) + 'px,' + (s.ry + my * 30 * s.d + Math.sin(ph) * 12).toFixed(1) + 'px,0) rotate(' + (s.a + Math.cos(ph) * 2.5).toFixed(1) + 'deg)';
       });
     });
   })();
@@ -234,7 +203,7 @@
       var act = !lab && e.target.closest && e.target.closest('a, button');
       ring.classList.toggle('is-big', !!act || !!lab);
       if (lab) { if (pill.textContent !== lab.dataset.cursor) pill.textContent = lab.dataset.cursor; target = 1; }
-      else if (e.target.closest && e.target.closest('.d-hero') && !act) { if (pill.textContent !== 'سلام! خوش آمدید') pill.textContent = 'سلام! خوش آمدید'; target = 1; }
+      else if (e.target.closest && e.target.closest('.d-hero') && !act) { if (pill.textContent !== 'یک لندینگ انتخاب کنید') pill.textContent = 'یک لندینگ انتخاب کنید'; target = 1; }
       else target = 0;
     }, { passive: true });
     doc.addEventListener('mouseleave', function () { target = 0; ring.classList.remove('is-on'); });

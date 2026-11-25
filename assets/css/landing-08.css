@@ -4,18 +4,18 @@
  * برای تغییر رنگ کافی است مقادیر زیر را عوض کنید.
  */
 :root{
-  --bg:#fffbea;
+  --bg:#fffbec;
   --surface:#ffffff;
-  --surface2:#ffe066;
+  --surface2:#fff1c2;
   --text:#1d3557;
-  --muted:#4c6380;
+  --muted:#56657c;
   --primary:#e63946;
   --primary-ink:#ffffff;
   --accent:#1d6fd8;
-  --line:#1d3557;
-  --radius:16px;
-  --radius-sm:min(16px,12px);
-  --btn-radius:calc(16px * .6);
+  --line:#f1e4b5;
+  --radius:20px;
+  --radius-sm:min(20px,12px);
+  --btn-radius:calc(20px * .6);
   --font-display:'Lalezar','Vazirmatn',sans-serif;
   --footer-bg:#1d3557;
   --footer-ink:#ece8e4;
@@ -27,22 +27,7 @@
 .section--pattern{background-color:var(--surface)}
 .section--pattern::before{content:"";position:absolute;inset:0;background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90'><g fill='none' stroke='%23e63946' stroke-width='2' stroke-linecap='round'><path d='M10 20q8-10 16 0t16 0'/><circle cx='68' cy='18' r='6'/><path d='M20 64l8 8m0-8-8 8'/><path d='M60 60l10 14 10-14z'/></g></svg>");opacity:0.12;-webkit-mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent);pointer-events:none}
 .section--pattern>.container{position:relative}
-.hero-title,.section-title,.featured-body h2,.about-body h2,.faq-aside h2,.bundle h3,.banner h3,.news h2{font-weight:400}
-.section-title{font-size:clamp(2rem,4.6vw,3.2rem)}
-.topbar{background:var(--accent);color:#fff;font-weight:700}
-.header{background:rgba(255,251,234,.92)}
-.logo-mark{background:var(--primary);border:2.5px solid var(--line);box-shadow:3px 3px 0 var(--line)}
-.btn{border:2.5px solid var(--line)}
-.btn--primary{box-shadow:4px 4px 0 var(--line)}
-.btn--primary:hover{box-shadow:6px 6px 0 var(--line);transform:translate(-2px,-2px)}
-.feature,.bundle,.review,.faq-item,.stat{border:2.5px solid var(--line);box-shadow:5px 5px 0 var(--line);background:#fff}
-.feature-icon{background:var(--surface2);color:var(--line);border:2px solid var(--line);border-radius:12px}
-.filter-tab{border:2px solid var(--line);color:var(--line)}
-.filter-tab[aria-pressed="true"]{background:var(--line);color:#fff}
-.cats--circles .cat-media{box-shadow:0 0 0 3px var(--line),6px 6px 0 3px var(--line)}
-.section--alt{background:#fff1b8}
-.news{background:var(--accent);border:3px solid var(--line);box-shadow:8px 8px 0 var(--line)}
-.banner{border:3px solid var(--line);box-shadow:8px 8px 0 var(--line);background:#fff}
-.featured-media{border:3px solid var(--line);box-shadow:8px 8px 0 var(--line)}
-.bundle--hot{border-color:var(--primary);box-shadow:5px 5px 0 var(--primary)}
-.price-now{color:var(--primary)}
+
+/* رنگ‌های مکمل نسخه‌ی ۲ */
+:root{--deep:#1d3557;--deep2:#28497a;--cream:#fff5d1;--blush:#e8f0ff;--hi:#ffd166;--prod-bg:#ffffff;--footer-bg:#1d3557}
+.hx-title{font-weight:400;line-height:1.35}.amz-w1{font-weight:400}.ab-title{font-weight:400}

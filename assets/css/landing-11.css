@@ -4,17 +4,17 @@
  * برای تغییر رنگ کافی است مقادیر زیر را عوض کنید.
  */
 :root{
-  --bg:#ffffff;
-  --surface:#f5f5f7;
-  --surface2:#ebebef;
+  --bg:#f6f8fc;
+  --surface:#ffffff;
+  --surface2:#eaeef8;
   --text:#0b0b0f;
-  --muted:#6e6e78;
+  --muted:#5d6373;
   --primary:#2f6bff;
   --primary-ink:#ffffff;
-  --accent:#0b0b0f;
-  --line:rgba(0,0,0,.08);
-  --radius:22px;
-  --radius-sm:min(22px,12px);
+  --accent:#7c5cff;
+  --line:#e1e6f1;
+  --radius:20px;
+  --radius-sm:min(20px,12px);
   --btn-radius:999px;
   --font-display:'Vazirmatn','Vazirmatn',sans-serif;
   --footer-bg:#0b0b0f;
@@ -24,27 +24,7 @@
   --amz:#2f6bff;
   --amz-ink:#ffffff;
 }
-.section-title{font-weight:300;font-size:clamp(2rem,4.6vw,3.4rem);letter-spacing:-.015em}
-.featured-body h2,.about-body h2,.faq-aside h2{font-weight:300;font-size:clamp(2rem,4vw,3rem)}
-.hero-eyebrow{font-weight:700}
-.header{background:rgba(255,255,255,.8)}
-.topbar{background:#0b0b0f;color:#fff}
-.logo-mark{background:#0b0b0f;color:#fff}
-.btn--primary{box-shadow:none}
-.btn--ghost{border-color:var(--line)}
-.feature{background:var(--surface);border:0}
-.feature-icon{background:#fff;color:var(--text);border-radius:50%}
-.filter-tab{border:0;background:var(--surface)}
-.filter-tab[aria-pressed="true"]{background:#0b0b0f;border-color:#0b0b0f;color:#fff}
-.cats--tiles .cat-media{aspect-ratio:1;background:var(--surface)}
-.news{background:#0b0b0f;color:#fff}
-.news .news-form .btn{background:#fff;color:#0b0b0f}
-.featured-media{background:var(--surface)}
-.featured-media img{mix-blend-mode:multiply}
-.stat b{color:var(--text)!important;font-weight:300;font-size:2.6rem}
-.check-list .icon{background:var(--text)}
-.price-now{font-weight:700}
-.bundle{border:0;background:var(--surface)}
-.bundle--hot{background:#0b0b0f;color:#fff;border:0}
-.bundle--hot ul,.bundle--hot .price-old{color:rgba(255,255,255,.65)}
-.bundle--hot li .icon{color:#fff}
+
+/* رنگ‌های مکمل نسخه‌ی ۲ */
+:root{--deep:#0b0b14;--deep2:#1a1f3a;--cream:#eef2fb;--blush:#f1edff;--hi:#a9c1ff;--prod-bg:#ffffff;--footer-bg:#0b0b14}
+
