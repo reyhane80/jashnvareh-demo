@@ -148,6 +148,18 @@ h2{font-family:'Lalezar',sans-serif;font-weight:400;font-size:clamp(2.2rem,5vw,3
 .swatches i{width:16px;height:16px;border-radius:50%;border:2px solid var(--surface);margin-inline-start:-5px}
 @media (max-width:1024px){.demo-grid{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:640px){.demo-grid{grid-template-columns:1fr}}
+/* کارت تنهای ردیف آخر: پهن و افقی */
+@media (min-width:641px){
+.demo-card.is-wide{grid-column:1/-1;flex-direction:row;align-items:stretch}
+.demo-card.is-wide .demo-shot{flex:0 0 62%;height:340px}
+.demo-card.is-wide:hover .demo-shot img{transform:translateY(calc(-100% + 340px))}
+.demo-card.is-wide .demo-info{flex:1;flex-direction:column;align-items:flex-start;justify-content:center;gap:12px;padding:32px 36px}
+.demo-card.is-wide .demo-num{font-size:2.6rem}
+.demo-card.is-wide .demo-info h3{font-size:1.35rem}
+.demo-card.is-wide .demo-info p{font-size:.9rem}
+.demo-card.is-wide .demo-info>div{flex:0 0 auto}
+}
+
 
 /* ---------- پنل اعداد ---------- */
 .d-stats-wrap{padding-bottom:100px}

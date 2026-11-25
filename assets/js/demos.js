@@ -29,8 +29,21 @@
       chips.forEach(function (x) { x.setAttribute('aria-pressed', x === c ? 'true' : 'false'); });
       var g = c.dataset.g;
       cards.forEach(function (card) { card.classList.toggle('is-hidden', g !== 'همه' && card.dataset.group !== g); card.classList.add('is-in'); });
+      lone();
     });
   });
+
+  /* کارت تنهای ردیف آخر تمام‌عرض می‌شود */
+  var grid = $('.demo-grid');
+  function lone() {
+    if (!grid) return;
+    cards.forEach(function (c) { c.classList.remove('is-wide'); });
+    var vis = cards.filter(function (c) { return !c.classList.contains('is-hidden'); });
+    var cols = getComputedStyle(grid).gridTemplateColumns.split(' ').length;
+    if (cols > 1 && vis.length > 1 && vis.length % cols === 1) vis[vis.length - 1].classList.add('is-wide');
+  }
+  lone();
+  window.addEventListener('resize', lone, { passive: true });
 
   /* ---------- سربرگ هنگام اسکرول ---------- */
   var head = $('.d-header');
