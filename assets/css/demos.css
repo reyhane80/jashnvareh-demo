@@ -300,3 +300,4 @@ h2{font-family:'Lalezar',sans-serif;font-weight:400;font-size:clamp(2.2rem,5vw,3
 .df-cta .pill{flex:none}
 @media (max-width:980px){.df-cta{flex-wrap:wrap}.df-cta h2{white-space:normal}}
 .steps{list-style:none;padding:0;margin:0}
+@media (max-width:640px){.d-head-cta{display:none}}
